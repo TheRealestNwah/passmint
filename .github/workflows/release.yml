@@ -1,8 +1,9 @@
 name: Release
 
-# Pushing a tag like v1.2.3 tests, builds and submits that version to AMO's
-# listed channel. To sign on the unlisted channel instead, run this workflow
-# by hand from the Actions tab against the tag and pick "unlisted".
+# Run this by hand from the Actions tab (target branch "main") to tag the
+# current manifest.json version, then test, build and submit it to AMO's
+# listed channel. Pick "unlisted" to sign on that channel instead. Pushing a
+# matching v1.2.3 tag yourself also works and skips straight to the build.
 #
 # Needs two repository secrets from https://addons.mozilla.org/developers/addon/api/key/
 #   AMO_JWT_ISSUER  the "JWT issuer" value
@@ -30,6 +31,8 @@ jobs:
   sign:
     name: Build and sign for AMO
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       CHANNEL: ${{ inputs.channel || 'listed' }}
     steps:
@@ -39,16 +42,35 @@ jobs:
         with:
           node-version: 20
 
-      - name: Check versions match the tag
-        env:
-          REF_TYPE: ${{ github.ref_type }}
-          REF_NAME: ${{ github.ref_name }}
+      - name: Check manifest and package versions match
+        run: npm run check-versions
+
+      - name: Determine release tag
+        id: release
+        run: echo "tag=v$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
+
+      # Running from a tag push, the tag already names the version being
+      # released; running by hand from a branch, nothing points at a version
+      # yet, so this job tags manifest.json's current version itself below.
+      - name: Check the pushed tag matches the version
+        if: github.ref_type == 'tag'
         run: |
-          if [ "$REF_TYPE" = "tag" ]; then
-            npm run check-versions -- "$REF_NAME"
-          else
-            npm run check-versions
+          if [ "${{ github.ref_name }}" != "${{ steps.release.outputs.tag }}" ]; then
+            echo "::error::Tag ${{ github.ref_name }} doesn't match manifest.json's version (expected ${{ steps.release.outputs.tag }})."
+            exit 1
           fi
+
+      - name: Tag this commit
+        if: github.ref_type != 'tag'
+        env:
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "::error::$TAG already exists on GitHub. Bump the version in manifest.json and package.json first."
+            exit 1
+          fi
+          git tag -a "$TAG" -m "Passmint $TAG"
+          git push origin "$TAG"
 
       - run: npm install
 
@@ -91,6 +113,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: env.CHANNEL == 'unlisted'
         with:
-          name: passmint-${{ github.ref_name }}-signed
+          name: passmint-${{ steps.release.outputs.tag }}-signed
           path: web-ext-artifacts/*.xpi
           if-no-files-found: error
