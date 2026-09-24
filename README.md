@@ -178,9 +178,10 @@ The package lands in `web-ext-artifacts/`.
 
 ```bash
 npm install
-npm test          # 67 unit tests, node:test, no browser needed
-npm run lint      # web-ext lint against the Mozilla add-on rules
-npm start         # launch a scratch Firefox profile with the add-on loaded
+npm test            # 67 unit tests, node:test, no browser needed
+npm run test:popup  # 34 popup tests in headless Chromium (Playwright)
+npm run lint        # web-ext lint against the Mozilla add-on rules
+npm start           # launch a scratch Firefox profile with the add-on loaded
 ```
 
 The generator is a plain ES module with no extension APIs in it
@@ -188,7 +189,10 @@ The generator is a plain ES module with no extension APIs in it
 colour maths pure for the same reason ([`src/theme.js`](src/theme.js)), so the
 test suite runs both directly under Node. The popup ([`popup/`](popup/)) is the
 only part that touches `browser.*`, and it degrades to in-memory defaults when
-storage or the theme API is unavailable.
+storage or the theme API is unavailable. `npm run test:popup` loads it in
+headless Chromium with those APIs stubbed and drives copy, the keyboard
+shortcuts, the storage fallbacks and the Appearance panel. Run
+`npx playwright install chromium` once before the first run.
 
 ```
 manifest.json         MV3 manifest (Firefox 140+, Android 142+)
