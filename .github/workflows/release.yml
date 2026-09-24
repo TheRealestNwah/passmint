@@ -55,6 +55,12 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Install Chromium for the popup tests
+        run: npx playwright install --with-deps chromium
+
+      - name: Popup tests (headless Chromium)
+        run: npm run test:popup
+
       - name: web-ext lint
         run: npm run lint
 
