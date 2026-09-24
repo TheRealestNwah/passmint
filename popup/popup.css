@@ -351,6 +351,16 @@ body {
   margin-top: 8px;
 }
 
+.auto-clear {
+  margin: 0 0 0 auto;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.auto-clear-hint {
+  margin-top: 6px;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;

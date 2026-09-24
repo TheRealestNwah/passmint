@@ -22,8 +22,15 @@
   "permissions": [
     "storage",
     "clipboardWrite",
+    "alarms",
     "theme"
   ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "type": "module"
+  },
   "action": {
     "default_title": "Passmint — generate a password",
     "default_popup": "popup/popup.html",
