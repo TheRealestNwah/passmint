@@ -4,11 +4,14 @@ A Firefox extension that generates strong passwords and passphrases, with enough
 knobs to satisfy whatever arbitrary rules the site you're signing up for has
 decided on today.
 
-Everything happens in the popup. There is no background script, no network
-access, and no telemetry — the extension requests three permissions, all of
-them local: `storage` for your settings, `clipboardWrite` for the copy button,
-and `theme` to read the colours of your current Firefox theme. None of the
-three carry an install-time warning, and `theme` is read-only.
+Everything happens in the popup, apart from one optional job for a small
+background script: clearing the clipboard after you copy (see
+[Clipboard auto-clear](#clipboard-auto-clear)). There is no network access and
+no telemetry — the extension requests four permissions, all of them local:
+`storage` for your settings, `clipboardWrite` for the copy button and the
+clear, `alarms` to time the clear, and `theme` to read the colours of your
+current Firefox theme. None of the four carry an install-time warning, and
+`theme` is read-only.
 
 ## Features
 
@@ -33,10 +36,32 @@ three carry an install-time warning, and `theme` is read-only.
 **Presets** — PIN, Readable, Strong, and Paranoid, for when you don't want to
 think about it.
 
+**Clipboard auto-clear** — an opt-in checkbox under the Copy button that wipes
+the clipboard 30 seconds after you copy.
+
 **Live strength meter** — shows the actual entropy in bits and the time to
 brute force at a trillion guesses per second. The estimate is computed from the
 real keyspace (`length × log₂(pool)`, or `words × log₂(2569)`), not from a
 heuristic that counts how many character types you used.
+
+## Clipboard auto-clear
+
+Tick **Clear clipboard after 30s** under the Copy button and Passmint empties
+the clipboard 30 seconds after each copy. Copying again restarts the countdown,
+and unticking the box cancels a pending clear.
+
+It is off by default because it clears **whatever is on the clipboard at that
+point**, even if you have copied something else since. Checking first would
+take the `clipboardRead` permission, which Firefox announces at install as
+"read data from the clipboard" — a worse trade for a password tool than the
+occasional lost copy, so Passmint doesn't ask for it.
+
+The popup can't do the clearing itself: Firefox closes it as soon as you click
+away, and its timers go with it. So the Copy button messages a background
+script ([`background.js`](background.js)), which sets a browser alarm. The
+background is an event page that Firefox suspends when idle; the alarm wakes
+it, it writes an empty string to the clipboard, and it goes back to sleep. It
+keeps no state and does nothing else.
 
 ## Native theming
 
@@ -178,16 +203,18 @@ The package lands in `web-ext-artifacts/`.
 
 ```bash
 npm install
-npm test          # 67 unit tests, node:test, no browser needed
+npm test          # 74 unit tests, node:test, no browser needed
 npm run lint      # web-ext lint against the Mozilla add-on rules
 npm start         # launch a scratch Firefox profile with the add-on loaded
 ```
 
 The generator is a plain ES module with no extension APIs in it
 ([`src/generator.js`](src/generator.js)), and the theming logic keeps its
-colour maths pure for the same reason ([`src/theme.js`](src/theme.js)), so the
-test suite runs both directly under Node. The popup ([`popup/`](popup/)) is the
-only part that touches `browser.*`, and it degrades to in-memory defaults when
+colour maths pure for the same reason ([`src/theme.js`](src/theme.js)), as does
+the clipboard clear ([`src/clipboard.js`](src/clipboard.js)), so the test suite
+runs them directly under Node. The popup ([`popup/`](popup/)) and
+[`background.js`](background.js) are the only parts that touch `browser.*`, and
+the popup degrades to in-memory defaults when
 storage or the theme API is unavailable.
 
 ```
@@ -197,6 +224,8 @@ src/generator.js      generation, entropy, strength — no browser APIs
 src/theme.js          browser theme -> CSS custom properties
 src/appearance.js     style/mode/accent choice, Waterfox detection
 popup/boot.js         repaints the cached look before first paint
+background.js         event page that clears the clipboard on a timer
+src/clipboard.js      scheduling for the clipboard clear
 src/wordlist.js       passphrase wordlist
 icons/toolbar.svg     monochrome toolbar icon, tinted by Firefox
 test/                 node:test suite

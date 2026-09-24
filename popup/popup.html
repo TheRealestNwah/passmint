@@ -68,7 +68,15 @@
             />
           </svg>
         </button>
+        <label class="check auto-clear">
+          <input id="clear-clipboard" type="checkbox" aria-describedby="clear-clipboard-hint" />
+          <span>Clear clipboard after 30s</span>
+        </label>
       </div>
+      <p id="clear-clipboard-hint" class="muted note auto-clear-hint" hidden>
+        Clears whatever is on the clipboard 30 seconds after you copy, even if
+        you have copied something else since.
+      </p>
 
       <div class="strength">
         <div class="meter" role="img" aria-label="Strength meter">

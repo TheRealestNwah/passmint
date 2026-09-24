@@ -18,6 +18,7 @@ import {
   takeSnapshot
 } from '../src/appearance.js';
 import { mix, normalizeColor, toCss } from '../src/theme.js';
+import { MESSAGES } from '../src/clipboard.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -45,7 +46,10 @@ const DEFAULTS = {
   separator: '-',
   capitalize: true,
   addNumber: true,
-  addSymbol: false
+  addSymbol: false,
+  // Off by default: without clipboardRead the wipe can't tell whether the
+  // clipboard still holds the password, so it may clear something else.
+  clearClipboard: false
 };
 
 const PRESETS = {
@@ -110,7 +114,9 @@ async function saveSettings() {
 /* ── Reading and writing the form ── */
 
 function readForm() {
-  const next = { mode: settings.mode };
+  // clearClipboard has no entry in CONTROLS because toggling it must not
+  // re-roll the password you may have just copied.
+  const next = { mode: settings.mode, clearClipboard: settings.clearClipboard };
   for (const [key, [id, prop, cast]] of Object.entries(CONTROLS)) {
     const raw = $(id)[prop];
     next[key] = cast ? cast(raw) : raw;
@@ -125,6 +131,8 @@ function writeForm() {
   $('length-number').value = settings.length;
   $('word-count-number').value = settings.wordCount;
   $('custom-symbols-row').hidden = settings.symbolSet !== 'custom';
+  $('clear-clipboard').checked = settings.clearClipboard;
+  $('clear-clipboard-hint').hidden = !settings.clearClipboard;
 
   const isPassword = settings.mode === 'password';
   $('panel-password').hidden = appearanceOpen || !isPassword;
@@ -175,6 +183,13 @@ function generate() {
   }
 }
 
+/** Asks background.js to schedule or cancel the wipe; the popup won't live long enough. */
+function tellBackground(type) {
+  globalThis.browser?.runtime?.sendMessage({ type }).catch(() => {
+    /* No background (e.g. the popup opened as a plain page); nothing to wipe. */
+  });
+}
+
 /** Called on every control change: sync state, persist, re-roll. */
 function onChange() {
   settings = readForm();
@@ -202,6 +217,7 @@ async function copyResult() {
     document.execCommand('copy');
     ta.remove();
   }
+  if (settings.clearClipboard) tellBackground(MESSAGES.schedule);
 
   btn.textContent = 'Copied';
   btn.classList.add('is-copied');
@@ -353,6 +369,13 @@ function bind() {
   }
 
   $('regenerate').addEventListener('click', generate);
+
+  $('clear-clipboard').addEventListener('change', (e) => {
+    settings.clearClipboard = e.target.checked;
+    writeForm();
+    saveSettings();
+    if (!settings.clearClipboard) tellBackground(MESSAGES.cancel);
+  });
 
   $('appearance-toggle').addEventListener('click', () => {
     appearanceOpen = !appearanceOpen;
