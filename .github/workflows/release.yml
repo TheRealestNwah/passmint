@@ -118,3 +118,12 @@ jobs:
           name: passmint-${{ steps.release.outputs.tag }}-signed
           path: web-ext-artifacts/*.xpi
           if-no-files-found: error
+
+      # Signing succeeded, so the tag is real; give it a Release page too,
+      # with GitHub's own auto-generated notes (commits and merged PRs since
+      # the previous release) rather than none at all.
+      - name: Create a GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.release.outputs.tag }}
+        run: gh release create "$TAG" --title "Passmint $TAG" --generate-notes
