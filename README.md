@@ -203,9 +203,10 @@ The package lands in `web-ext-artifacts/`.
 
 ```bash
 npm install
-npm test          # 74 unit tests, node:test, no browser needed
-npm run lint      # web-ext lint against the Mozilla add-on rules
-npm start         # launch a scratch Firefox profile with the add-on loaded
+npm test            # 74 unit tests, node:test, no browser needed
+npm run test:popup  # 34 popup tests in headless Chromium (Playwright)
+npm run lint        # web-ext lint against the Mozilla add-on rules
+npm start           # launch a scratch Firefox profile with the add-on loaded
 ```
 
 The generator is a plain ES module with no extension APIs in it
@@ -214,8 +215,11 @@ colour maths pure for the same reason ([`src/theme.js`](src/theme.js)), as does
 the clipboard clear ([`src/clipboard.js`](src/clipboard.js)), so the test suite
 runs them directly under Node. The popup ([`popup/`](popup/)) and
 [`background.js`](background.js) are the only parts that touch `browser.*`, and
-the popup degrades to in-memory defaults when
-storage or the theme API is unavailable.
+the popup degrades to in-memory defaults when storage or the theme API is
+unavailable. `npm run test:popup` loads it in headless Chromium with those APIs
+stubbed and drives copy, the keyboard shortcuts, the storage fallbacks and the
+Appearance panel. Run `npx playwright install chromium` once before the first
+run.
 
 ```
 manifest.json         MV3 manifest (Firefox 140+, Android 142+)
@@ -230,6 +234,24 @@ src/wordlist.js       passphrase wordlist
 icons/toolbar.svg     monochrome toolbar icon, tinted by Firefox
 test/                 node:test suite
 ```
+
+### Releasing
+
+Bump `version` in both `manifest.json` and `package.json` (CI fails if they
+differ), then push a matching tag:
+
+```bash
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+The [Release workflow](.github/workflows/release.yml) checks the tag matches
+the version, runs the tests and lint, and submits the build to AMO's listed
+channel. To sign on the unlisted channel instead, run the workflow from the
+Actions tab against the tag and pick `unlisted`; the signed `.xpi` is attached
+to the run. Either way it needs the `AMO_JWT_ISSUER` and `AMO_JWT_SECRET`
+repository secrets, from AMO's
+[API credentials page](https://addons.mozilla.org/developers/addon/api/key/).
 
 ## Keyboard
 
