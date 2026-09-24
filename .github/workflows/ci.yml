@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Check manifest and package versions match
+        run: npm run check-versions
+
       - run: npm install
 
       - name: Unit tests

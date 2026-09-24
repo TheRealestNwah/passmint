@@ -202,6 +202,24 @@ icons/toolbar.svg     monochrome toolbar icon, tinted by Firefox
 test/                 node:test suite
 ```
 
+### Releasing
+
+Bump `version` in both `manifest.json` and `package.json` (CI fails if they
+differ), then push a matching tag:
+
+```bash
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+The [Release workflow](.github/workflows/release.yml) checks the tag matches
+the version, runs the tests and lint, and submits the build to AMO's listed
+channel. To sign on the unlisted channel instead, run the workflow from the
+Actions tab against the tag and pick `unlisted`; the signed `.xpi` is attached
+to the run. Either way it needs the `AMO_JWT_ISSUER` and `AMO_JWT_SECRET`
+repository secrets, from AMO's
+[API credentials page](https://addons.mozilla.org/developers/addon/api/key/).
+
 ## Keyboard
 
 | Key | Action |

@@ -1,0 +1,90 @@
+name: Release
+
+# Pushing a tag like v1.2.3 tests, builds and submits that version to AMO's
+# listed channel. To sign on the unlisted channel instead, run this workflow
+# by hand from the Actions tab against the tag and pick "unlisted".
+#
+# Needs two repository secrets from https://addons.mozilla.org/developers/addon/api/key/
+#   AMO_JWT_ISSUER  the "JWT issuer" value
+#   AMO_JWT_SECRET  the "JWT secret" value
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: AMO channel to sign on
+        type: choice
+        options: [listed, unlisted]
+        default: listed
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sign:
+    name: Build and sign for AMO
+    runs-on: ubuntu-latest
+    env:
+      CHANNEL: ${{ inputs.channel || 'listed' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check versions match the tag
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$REF_TYPE" = "tag" ]; then
+            npm run check-versions -- "$REF_NAME"
+          else
+            npm run check-versions
+          fi
+
+      - run: npm install
+
+      - name: Unit tests
+        run: npm test
+
+      - name: web-ext lint
+        run: npm run lint
+
+      - name: Check AMO credentials are set
+        env:
+          AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+          AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+        run: |
+          if [ -z "$AMO_JWT_ISSUER" ] || [ -z "$AMO_JWT_SECRET" ]; then
+            echo "::error::Add the AMO_JWT_ISSUER and AMO_JWT_SECRET repository secrets before releasing."
+            exit 1
+          fi
+
+      # Listed versions can sit in AMO's review queue, so don't wait for them;
+      # AMO publishes and hosts the signed file once approved. Unlisted
+      # signing is automated, so wait and keep the signed .xpi.
+      - name: Sign on the ${{ env.CHANNEL }} channel
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.AMO_JWT_ISSUER }}
+          WEB_EXT_API_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+        run: |
+          if [ "$CHANNEL" = "listed" ]; then
+            npm run sign -- --channel=listed --approval-timeout=0
+          else
+            npm run sign -- --channel=unlisted
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: env.CHANNEL == 'unlisted'
+        with:
+          name: passmint-${{ github.ref_name }}-signed
+          path: web-ext-artifacts/*.xpi
+          if-no-files-found: error
