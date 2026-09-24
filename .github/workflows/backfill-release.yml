@@ -1,0 +1,30 @@
+name: Backfill a GitHub Release
+
+# For a tag that already exists but never got a Release page — the release
+# workflow didn't always create one. Run this by hand from the Actions tab
+# and give it the tag. It never touches AMO or builds anything.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to create a Release for (e.g. v1.3.0)
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create the Release page
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+
+      - name: Create a GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: gh release create "$TAG" --title "Passmint $TAG" --generate-notes
