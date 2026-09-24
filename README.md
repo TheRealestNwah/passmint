@@ -238,19 +238,18 @@ test/                 node:test suite
 ### Releasing
 
 Bump `version` in both `manifest.json` and `package.json` (CI fails if they
-differ), then push a matching tag:
+differ), merge that to `main`, then run the
+[Release workflow](.github/workflows/release.yml) by hand from the Actions
+tab (target `main`). It tags the commit with the new version itself, runs the
+tests and lint, and submits the build to AMO's listed channel. Pick
+`unlisted` on that same run to sign on the unlisted channel instead; the
+signed `.xpi` is attached to the run.
 
-```bash
-git tag v1.2.3
-git push origin v1.2.3
-```
+Pushing a matching `vX.Y.Z` tag yourself also works and skips straight to the
+build, for anyone who'd rather not use the Actions tab.
 
-The [Release workflow](.github/workflows/release.yml) checks the tag matches
-the version, runs the tests and lint, and submits the build to AMO's listed
-channel. To sign on the unlisted channel instead, run the workflow from the
-Actions tab against the tag and pick `unlisted`; the signed `.xpi` is attached
-to the run. Either way it needs the `AMO_JWT_ISSUER` and `AMO_JWT_SECRET`
-repository secrets, from AMO's
+Either way it needs the `AMO_JWT_ISSUER` and `AMO_JWT_SECRET` repository
+secrets, from AMO's
 [API credentials page](https://addons.mozilla.org/developers/addon/api/key/).
 
 ## Keyboard
