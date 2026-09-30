@@ -13,6 +13,11 @@ clear, `alarms` to time the clear, and `theme` to read the colours of your
 current Firefox theme. None of the four carry an install-time warning, and
 `theme` is read-only.
 
+> **Built with AI.** Passmint's code, tests and documentation were written by
+> Claude, an AI model from Anthropic, directed and tested by the maintainer.
+> The extension itself has no AI features.
+> See [AI disclosure](#ai-disclosure).
+
 ## Features
 
 **Two modes**
@@ -270,6 +275,13 @@ which.
 
 This is about how Passmint was made, not what it does. The extension has no AI
 features, makes no network requests, and sends nothing anywhere.
+
+## Support
+
+Everything on my GitHub is free of charge and open source. If you find it
+useful and want to leave a tip or buy me a coffee, you can do that at
+[ko-fi.com/morrowheat23](https://ko-fi.com/morrowheat23). It's appreciated,
+never expected.
 
 ## License
 
