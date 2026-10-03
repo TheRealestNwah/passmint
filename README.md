@@ -10,6 +10,16 @@ them local: `storage` for your settings, `clipboardWrite` for the copy button,
 and `theme` to read the colours of your current Firefox theme. None of the
 three carry an install-time warning, and `theme` is read-only.
 
+## Screenshots
+
+| Firefox, light | Firefox, dark | Passphrase mode |
+| :---: | :---: | :---: |
+| ![Passmint in Firefox, light](docs/screenshots/firefox-light.png) | ![Passmint in Firefox, dark](docs/screenshots/firefox-dark.png) | ![Passmint in passphrase mode](docs/screenshots/passphrase.png) |
+
+| Waterfox Nova, light | Waterfox Nova, dark | Appearance panel |
+| :---: | :---: | :---: |
+| ![Passmint in Waterfox, light](docs/screenshots/waterfox-light.png) | ![Passmint in Waterfox, dark](docs/screenshots/waterfox-dark.png) | ![The Appearance panel](docs/screenshots/appearance.png) |
+
 ## Features
 
 **Two modes**
