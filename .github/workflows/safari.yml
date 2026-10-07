@@ -38,8 +38,10 @@ jobs:
           xcrun safari-web-extension-converter build/safari
           --project-location build/safari-xcode
           --app-name Passmint
-          --bundle-identifier io.github.therealestnwah.passmint
           --macos-only --no-open --no-prompt --force
+
+      - name: Show bundle identifiers
+        run: grep -h PRODUCT_BUNDLE_IDENTIFIER build/safari-xcode/Passmint/Passmint.xcodeproj/project.pbxproj | sort -u
 
       - name: Show schemes
         run: xcodebuild -list -project build/safari-xcode/Passmint/Passmint.xcodeproj
