@@ -24,7 +24,10 @@ async function writeClipboard(text) {
   }
 }
 
-const clearer = createClipboardClearer({ alarms: browser.alarms, writeClipboard });
+// Chromium has only `chrome.*` (promise-based in MV3); Firefox and Safari have `browser.*`.
+const api = globalThis.browser ?? globalThis.chrome;
 
-browser.runtime.onMessage.addListener(clearer.onMessage);
-browser.alarms.onAlarm.addListener(clearer.onAlarm);
+const clearer = createClipboardClearer({ alarms: api.alarms, writeClipboard });
+
+api.runtime.onMessage.addListener(clearer.onMessage);
+api.alarms.onAlarm.addListener(clearer.onAlarm);

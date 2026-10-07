@@ -228,8 +228,12 @@
         <span class="row-label" id="style-label">Style</span>
         <div class="segmented" role="radiogroup" aria-labelledby="style-label">
           <label class="segmented-option"><input type="radio" name="appearance-style" value="auto" />Auto</label>
-          <label class="segmented-option"><input type="radio" name="appearance-style" value="photon" />Firefox</label>
-          <label class="segmented-option"><input type="radio" name="appearance-style" value="nova" />Waterfox</label>
+          <label class="segmented-option" data-family="firefox"><input type="radio" name="appearance-style" value="photon" />Firefox</label>
+          <label class="segmented-option" data-family="firefox"><input type="radio" name="appearance-style" value="nova" />Waterfox</label>
+          <label class="segmented-option" data-family="chromium"><input type="radio" name="appearance-style" value="chrome" />Chrome</label>
+          <label class="segmented-option" data-family="chromium"><input type="radio" name="appearance-style" value="edge" />Edge</label>
+          <label class="segmented-option" data-family="chromium"><input type="radio" name="appearance-style" value="brave" />Brave</label>
+          <label class="segmented-option" data-family="chromium"><input type="radio" name="appearance-style" value="gx" />GX</label>
         </div>
       </div>
       <p id="style-hint" class="muted note hint"></p>

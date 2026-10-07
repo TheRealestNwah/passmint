@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - 'safari/**'
+      - 'packaging/**'
       - 'manifest.json'
       - 'background.js'
       - 'popup/**'

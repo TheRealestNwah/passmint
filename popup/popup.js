@@ -9,7 +9,9 @@ import { WORDLIST } from '../src/wordlist.js';
 import {
   ACCENTS,
   APPEARANCE_DEFAULTS,
+  CHROMIUM_STYLE_IDS,
   SNAPSHOT_KEY,
+  STYLE_NAMES,
   applyAppearance,
   detectBrowserName,
   isWaterfox,
@@ -19,12 +21,12 @@ import {
 } from '../src/appearance.js';
 import { mix, normalizeColor, toCss } from '../src/theme.js';
 import { MESSAGES } from '../src/clipboard.js';
-import { isSafariExtension, supportsClipboardAutoClear } from '../src/platform.js';
+import { browserFamily, supportsClipboardAutoClear } from '../src/platform.js';
 
 const $ = (id) => document.getElementById(id);
 
 const extensionRuntime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
-const safari = isSafariExtension(extensionRuntime);
+const family = browserFamily(extensionRuntime);
 const autoClearSupported = supportsClipboardAutoClear(extensionRuntime);
 
 // Deliberately still the old product name: renaming this key would orphan the
@@ -191,7 +193,7 @@ function generate() {
 
 /** Asks background.js to schedule or cancel the wipe; the popup won't live long enough. */
 function tellBackground(type) {
-  globalThis.browser?.runtime?.sendMessage({ type }).catch(() => {
+  extensionRuntime?.sendMessage({ type })?.catch?.(() => {
     /* No background (e.g. the popup opened as a plain page); nothing to wipe. */
   });
 }
@@ -236,6 +238,11 @@ async function copyResult() {
 /* ── Appearance ── */
 
 function styleHint(resolved) {
+  if (family === 'chromium') {
+    return appearance.prefs.style === 'auto' || !CHROMIUM_STYLE_IDS.includes(appearance.prefs.style)
+      ? `Using the ${STYLE_NAMES[resolved]} look, picked from your browser.`
+      : `Always the ${STYLE_NAMES[resolved]} look.`;
+  }
   if (appearance.prefs.style !== 'auto') {
     return resolved === 'nova'
       ? 'Always the Waterfox Nova look.'
@@ -260,13 +267,17 @@ function renderAppearanceControls(resolved) {
   // Waterfox's theme colours only mean something in the Nova look.
   $('accent-block').hidden = resolved !== 'nova';
   // Safari has one look, Liquid Glass, so there is no style to choose.
-  $('style-row').hidden = safari;
-  $('style-hint').hidden = safari;
+  $('style-row').hidden = family === 'safari';
+  $('style-hint').hidden = family === 'safari';
+  // Each browser family is offered only its own looks.
+  for (const option of document.querySelectorAll('.segmented-option[data-family]')) {
+    option.hidden = option.dataset.family !== family;
+  }
   $('style-hint').textContent = styleHint(resolved);
 }
 
 function paintAppearance() {
-  const style = resolveStyle(appearance.prefs.style, appearance.browserName, safari);
+  const style = resolveStyle(appearance.prefs.style, appearance.browserName, family);
   applyAppearance(root, { ...appearance.prefs, style }, appearance.theme);
   try {
     localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(takeSnapshot(root)));

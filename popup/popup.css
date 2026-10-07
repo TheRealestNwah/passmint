@@ -945,6 +945,409 @@ code {
   }
 }
 
+/* ── Chromium palettes (generated: node chrome/gen-tokens.mjs) ───────── */
+:root[data-style="chrome"] {
+  --bg: #ffffff;
+  --bg-sunken: #f0f4f9;
+  --bg-raised: #ffffff;
+  --border: #c4c7c5;
+  --border-strong: #747775;
+  --text: #1f1f1f;
+  --text-muted: #444746;
+  --button-bg: #ffffff;
+  --surface-hover: #ededed;
+  --surface-active: #e0e0e0;
+  --accent: #0b57d0;
+  --accent-hover: #094ab1;
+  --accent-active: #083d92;
+  --accent-text: #ffffff;
+  --focus-ring: #0b57d0;
+  --danger: #c50042;
+  --success: #017a4a;
+  --s0: #d70022;
+  --s1: #d76e00;
+  --s2: #a47f00;
+  --s3: #058b00;
+  --s4: #0b57d0;
+
+  --radius: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --radius-pill-inner: 999px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-style="chrome"]:not([data-theme="light"]) {
+    --bg: #1f1f1f;
+    --bg-sunken: #131314;
+    --bg-raised: #2d2f31;
+    --border: #444746;
+    --border-strong: #8e918f;
+    --text: #e3e3e3;
+    --text-muted: #c4c7c5;
+    --button-bg: #2d2f31;
+    --surface-hover: #373737;
+    --surface-active: #464646;
+    --accent: #a8c7fa;
+    --accent-hover: #b5cffb;
+    --accent-active: #c2d8fc;
+    --accent-text: #062e6f;
+    --focus-ring: #a8c7fa;
+    --danger: #ff9aa2;
+    --success: #a6e8bf;
+    --s0: #ff9aa2;
+    --s1: #ffb68a;
+    --s2: #ffe07a;
+    --s3: #a6e8bf;
+    --s4: #a8c7fa;
+  }
+}
+
+:root[data-style="chrome"][data-theme="dark"] {
+  --bg: #1f1f1f;
+  --bg-sunken: #131314;
+  --bg-raised: #2d2f31;
+  --border: #444746;
+  --border-strong: #8e918f;
+  --text: #e3e3e3;
+  --text-muted: #c4c7c5;
+  --button-bg: #2d2f31;
+  --surface-hover: #373737;
+  --surface-active: #464646;
+  --accent: #a8c7fa;
+  --accent-hover: #b5cffb;
+  --accent-active: #c2d8fc;
+  --accent-text: #062e6f;
+  --focus-ring: #a8c7fa;
+  --danger: #ff9aa2;
+  --success: #a6e8bf;
+  --s0: #ff9aa2;
+  --s1: #ffb68a;
+  --s2: #ffe07a;
+  --s3: #a6e8bf;
+  --s4: #a8c7fa;
+}
+
+:root[data-style="edge"] {
+  --bg: #ffffff;
+  --bg-sunken: #f5f5f5;
+  --bg-raised: #ffffff;
+  --border: #e0e0e0;
+  --border-strong: #8a8a8a;
+  --text: #242424;
+  --text-muted: #616161;
+  --button-bg: #ffffff;
+  --surface-hover: #ededed;
+  --surface-active: #e0e0e0;
+  --accent: #0f6cbd;
+  --accent-hover: #0d5ca1;
+  --accent-active: #0b4c84;
+  --accent-text: #ffffff;
+  --focus-ring: #0f6cbd;
+  --danger: #c50042;
+  --success: #017a4a;
+  --s0: #d70022;
+  --s1: #d76e00;
+  --s2: #a47f00;
+  --s3: #058b00;
+  --s4: #0f6cbd;
+
+  --radius: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 4px;
+  --radius-pill-inner: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-style="edge"]:not([data-theme="light"]) {
+    --bg: #292929;
+    --bg-sunken: #1f1f1f;
+    --bg-raised: #3d3d3d;
+    --border: #525252;
+    --border-strong: #9e9e9e;
+    --text: #ffffff;
+    --text-muted: #d6d6d6;
+    --button-bg: #3d3d3d;
+    --surface-hover: #434343;
+    --surface-active: #545454;
+    --accent: #479ef5;
+    --accent-hover: #63adf7;
+    --accent-active: #7ebbf8;
+    --accent-text: #0a1c33;
+    --focus-ring: #479ef5;
+    --danger: #ff9aa2;
+    --success: #a6e8bf;
+    --s0: #ff9aa2;
+    --s1: #ffb68a;
+    --s2: #ffe07a;
+    --s3: #a6e8bf;
+    --s4: #479ef5;
+  }
+}
+
+:root[data-style="edge"][data-theme="dark"] {
+  --bg: #292929;
+  --bg-sunken: #1f1f1f;
+  --bg-raised: #3d3d3d;
+  --border: #525252;
+  --border-strong: #9e9e9e;
+  --text: #ffffff;
+  --text-muted: #d6d6d6;
+  --button-bg: #3d3d3d;
+  --surface-hover: #434343;
+  --surface-active: #545454;
+  --accent: #479ef5;
+  --accent-hover: #63adf7;
+  --accent-active: #7ebbf8;
+  --accent-text: #0a1c33;
+  --focus-ring: #479ef5;
+  --danger: #ff9aa2;
+  --success: #a6e8bf;
+  --s0: #ff9aa2;
+  --s1: #ffb68a;
+  --s2: #ffe07a;
+  --s3: #a6e8bf;
+  --s4: #479ef5;
+}
+
+:root[data-style="brave"] {
+  --bg: #ffffff;
+  --bg-sunken: #f3f4f7;
+  --bg-raised: #ffffff;
+  --border: #dfe1e8;
+  --border-strong: #8a8e9b;
+  --text: #1d1f25;
+  --text-muted: #5a5e6a;
+  --button-bg: #ffffff;
+  --surface-hover: #ededee;
+  --surface-active: #dfe0e0;
+  --accent: #c7380f;
+  --accent-hover: #a9300d;
+  --accent-active: #8b270b;
+  --accent-text: #ffffff;
+  --focus-ring: #c7380f;
+  --danger: #c50042;
+  --success: #017a4a;
+  --s0: #d70022;
+  --s1: #d76e00;
+  --s2: #a47f00;
+  --s3: #058b00;
+  --s4: #c7380f;
+
+  --radius: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --radius-pill-inner: 999px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-style="brave"]:not([data-theme="light"]) {
+    --bg: #17171f;
+    --bg-sunken: #101016;
+    --bg-raised: #23232d;
+    --border: #34343f;
+    --border-strong: #7a7d8c;
+    --text: #f2f2f5;
+    --text-muted: #b4b6c0;
+    --button-bg: #23232d;
+    --surface-hover: #313139;
+    --surface-active: #43434a;
+    --accent: #ff7a59;
+    --accent-hover: #ff8e72;
+    --accent-active: #ffa28b;
+    --accent-text: #1b0f0b;
+    --focus-ring: #ff7a59;
+    --danger: #ff9aa2;
+    --success: #a6e8bf;
+    --s0: #ff9aa2;
+    --s1: #ffb68a;
+    --s2: #ffe07a;
+    --s3: #a6e8bf;
+    --s4: #ff7a59;
+  }
+}
+
+:root[data-style="brave"][data-theme="dark"] {
+  --bg: #17171f;
+  --bg-sunken: #101016;
+  --bg-raised: #23232d;
+  --border: #34343f;
+  --border-strong: #7a7d8c;
+  --text: #f2f2f5;
+  --text-muted: #b4b6c0;
+  --button-bg: #23232d;
+  --surface-hover: #313139;
+  --surface-active: #43434a;
+  --accent: #ff7a59;
+  --accent-hover: #ff8e72;
+  --accent-active: #ffa28b;
+  --accent-text: #1b0f0b;
+  --focus-ring: #ff7a59;
+  --danger: #ff9aa2;
+  --success: #a6e8bf;
+  --s0: #ff9aa2;
+  --s1: #ffb68a;
+  --s2: #ffe07a;
+  --s3: #a6e8bf;
+  --s4: #ff7a59;
+}
+
+:root[data-style="gx"] {
+  --bg: #f6f3f5;
+  --bg-sunken: #ece8eb;
+  --bg-raised: #ffffff;
+  --border: #d9d3d8;
+  --border-strong: #8c8590;
+  --text: #14141b;
+  --text-muted: #575560;
+  --button-bg: #ffffff;
+  --surface-hover: #e4e1e4;
+  --surface-active: #d6d4d6;
+  --accent: #c8102e;
+  --accent-hover: #aa0e27;
+  --accent-active: #8c0b20;
+  --accent-text: #ffffff;
+  --focus-ring: #c8102e;
+  --danger: #c50042;
+  --success: #017a4a;
+  --s0: #d70022;
+  --s1: #d76e00;
+  --s2: #a47f00;
+  --s3: #058b00;
+  --s4: #c8102e;
+
+  --radius: 2px;
+  --radius-lg: 4px;
+  --radius-pill: 2px;
+  --radius-pill-inner: 1px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-style="gx"]:not([data-theme="light"]) {
+    --bg: #0e0e12;
+    --bg-sunken: #08080b;
+    --bg-raised: #1a1a22;
+    --border: #2c2c38;
+    --border-strong: #6a6876;
+    --text: #f4f2f5;
+    --text-muted: #b0aeb8;
+    --button-bg: #1a1a22;
+    --surface-hover: #2a292d;
+    --surface-active: #3c3c3f;
+    --accent: #fa1e4e;
+    --accent-hover: #fb4069;
+    --accent-active: #fc6283;
+    --accent-text: #14141b;
+    --focus-ring: #fa1e4e;
+    --danger: #ff9aa2;
+    --success: #a6e8bf;
+    --s0: #ff9aa2;
+    --s1: #ffb68a;
+    --s2: #ffe07a;
+    --s3: #a6e8bf;
+    --s4: #fa1e4e;
+  }
+}
+
+:root[data-style="gx"][data-theme="dark"] {
+  --bg: #0e0e12;
+  --bg-sunken: #08080b;
+  --bg-raised: #1a1a22;
+  --border: #2c2c38;
+  --border-strong: #6a6876;
+  --text: #f4f2f5;
+  --text-muted: #b0aeb8;
+  --button-bg: #1a1a22;
+  --surface-hover: #2a292d;
+  --surface-active: #3c3c3f;
+  --accent: #fa1e4e;
+  --accent-hover: #fb4069;
+  --accent-active: #fc6283;
+  --accent-text: #14141b;
+  --focus-ring: #fa1e4e;
+  --danger: #ff9aa2;
+  --success: #a6e8bf;
+  --s0: #ff9aa2;
+  --s1: #ffb68a;
+  --s2: #ffe07a;
+  --s3: #a6e8bf;
+  --s4: #fa1e4e;
+}
+
+/* ── Chromium looks: Chrome, Edge, Brave, Opera GX ───────────────────
+ * src/appearance.js sets data-style to one of these in Chromium browsers (the
+ * Firefox looks are not offered there). Tokens above come from
+ * CHROMIUM_PALETTES; a test keeps the two in step. Shapes and type follow each
+ * browser's own UI.
+ */
+:root[data-style="chrome"] body {
+  font-family: "Google Sans", Roboto, system-ui, sans-serif;
+}
+
+:root[data-style="edge"] body {
+  font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+}
+
+:root[data-style="brave"] body,
+:root[data-style="gx"] body {
+  font-family: system-ui, sans-serif;
+}
+
+/* Chrome: Material 3. The selected segment is a tonal fill, not solid accent. */
+:root[data-style="chrome"] .tabs,
+:root[data-style="chrome"] .segmented {
+  border-color: var(--border);
+  background: transparent;
+}
+
+:root[data-style="chrome"] .tab.is-active,
+:root[data-style="chrome"] .segmented-option:has(input:checked) {
+  background: color-mix(in srgb, var(--accent) 18%, var(--bg));
+  color: var(--text);
+}
+
+/* Edge: Fluent. Square-ish, bordered, with the accent on the selected edge. */
+:root[data-style="edge"] .tab,
+:root[data-style="edge"] .segmented-option {
+  border-color: var(--border);
+}
+
+:root[data-style="edge"] .tab.is-active,
+:root[data-style="edge"] .segmented-option:has(input:checked) {
+  border-color: var(--accent);
+}
+
+:root[data-style="edge"] .chip,
+:root[data-style="edge"] .btn:not(.btn-primary):not(.btn-ghost) {
+  border: 1px solid var(--border);
+}
+
+/* Brave: soft and round, with a warm lift under the primary button. */
+:root[data-style="brave"] .btn-primary {
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* Opera GX: angular, uppercase labels, and a neon edge on what is active. */
+:root[data-style="gx"] .btn,
+:root[data-style="gx"] .tab,
+:root[data-style="gx"] .panel-heading {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+:root[data-style="gx"] .btn-primary,
+:root[data-style="gx"] .tab.is-active,
+:root[data-style="gx"] .segmented-option:has(input:checked) {
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+:root[data-style="gx"] .chip,
+:root[data-style="gx"] .btn:not(.btn-primary):not(.btn-ghost) {
+  border: 1px solid var(--border-strong);
+}
+
 /* ── Footer ──────────────────────────────────────────────────────── */
 
 .footer {

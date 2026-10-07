@@ -10,7 +10,9 @@
  *
  *   storage     'browser' (default), 'chrome', 'none', 'get-rejects', 'set-rejects'
  *   stored      initial contents of storage.local
- *   browserName what runtime.getBrowserInfo reports (default 'Firefox')
+ *   browserName what runtime.getBrowserInfo reports (default 'Firefox'; null removes the API)
+ *   userAgent   the page's user agent (default: Playwright's Chromium)
+ *   brave       true makes navigator.brave.isBrave() resolve true
  *   extensionUrl what runtime.getURL('') returns (default 'moz-extension://test/')
  *   theme       what theme.getCurrent resolves to (default: no theme)
  *   clipboard   'ok' (default) or 'rejects', to force the textarea fallback
@@ -79,7 +81,9 @@ function installStubs(cfg) {
     window.browser = {
       storage: { local },
       runtime: {
-        getBrowserInfo: async () => ({ name: cfg.browserName ?? 'Firefox' }),
+        // Chromium has no getBrowserInfo; browserName: null leaves it out.
+        getBrowserInfo:
+          cfg.browserName === null ? undefined : async () => ({ name: cfg.browserName ?? 'Firefox' }),
         sendMessage: async (message) => {
           h.messages.push(message);
         },
@@ -91,6 +95,8 @@ function installStubs(cfg) {
       }
     };
   }
+
+  if (cfg.brave) navigator.brave = { isBrave: async () => true };
 
   Object.defineProperty(navigator, 'clipboard', {
     configurable: true,
@@ -117,7 +123,7 @@ export async function createHarness() {
 
     /** Open the popup and wait until it has painted and generated (or failed to). */
     async openPopup(cfg = {}) {
-      const context = await browser.newContext();
+      const context = await browser.newContext({ userAgent: cfg.userAgent });
       const page = await context.newPage();
       const errors = [];
       page.on('pageerror', (err) => errors.push(err));
