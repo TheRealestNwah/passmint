@@ -201,8 +201,8 @@ Steps and details are in [docs/safari.md](docs/safari.md).
 ### Chrome, Edge, Brave, Opera
 
 `npm run build:chrome`, then load `build/chrome/` unpacked from your browser's
-extensions page. Each browser gets its own look; the clipboard auto-clear isn't
-available there yet. See [docs/chrome.md](docs/chrome.md).
+extensions page. Each browser gets its own look, and the clipboard auto-clear works
+through an offscreen document. See [docs/chrome.md](docs/chrome.md).
 
 ### Firefox, from source, temporarily
 
@@ -237,7 +237,7 @@ The package lands in `web-ext-artifacts/`.
 
 ```bash
 npm install
-npm test            # 99 unit tests, node:test, no browser needed
+npm test            # 103 unit tests, node:test, no browser needed
 npm run test:popup  # 46 popup tests in headless Chromium (Playwright)
 npm run lint        # web-ext lint against the Mozilla add-on rules
 npm start           # launch a scratch Firefox profile with the add-on loaded

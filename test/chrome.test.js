@@ -1,14 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
-import { toChromeManifest } from '../chrome/manifest.mjs';
+import { OFFSCREEN_FILES, toChromeManifest } from '../chrome/manifest.mjs';
 
 const firefox = JSON.parse(readFileSync(new URL('../manifest.json', import.meta.url), 'utf8'));
 
 test('drops Firefox-only settings and the theme permission', () => {
   const chrome = toChromeManifest(firefox);
   assert.equal(chrome.browser_specific_settings, undefined);
-  assert.deepEqual(chrome.permissions, ['storage', 'clipboardWrite', 'alarms']);
+  assert.deepEqual(chrome.permissions, ['storage', 'clipboardWrite', 'alarms', 'offscreen']);
 });
 
 test('runs the background as a module service worker, not event-page scripts', () => {
@@ -37,4 +37,11 @@ test('does not mutate the source manifest', () => {
   const before = JSON.stringify(firefox);
   toChromeManifest(firefox);
   assert.equal(JSON.stringify(firefox), before);
+});
+
+test('ships the offscreen clipboard document that exists in the repo', () => {
+  for (const from of Object.keys(OFFSCREEN_FILES)) {
+    assert.ok(existsSync(new URL(`../${from}`, import.meta.url)), `${from} is missing`);
+  }
+  assert.ok(Object.values(OFFSCREEN_FILES).includes('offscreen.html'));
 });

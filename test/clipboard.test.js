@@ -6,7 +6,8 @@ import {
   CLEAR_ALARM,
   CLEAR_DELAY_MS,
   MESSAGES,
-  createClipboardClearer
+  createClipboardClearer,
+  createOffscreenWriter
 } from '../src/clipboard.js';
 
 const MANIFEST = JSON.parse(readFileSync(new URL('../manifest.json', import.meta.url), 'utf8'));
@@ -87,4 +88,40 @@ test('the manifest wires up the background script without clipboardRead', () => 
   // clipboardRead would let the wipe check the clipboard first, but it
   // carries an install-time warning.
   assert.ok(!MANIFEST.permissions.includes('clipboardRead'));
+});
+
+function fakeOffscreen({ open = false, reply = { ok: true } } = {}) {
+  const calls = [];
+  let isOpen = open;
+  return {
+    calls,
+    offscreen: {
+      createDocument: async (o) => { calls.push(['create', o]); isOpen = true; },
+      closeDocument: async () => { calls.push(['close']); isOpen = false; }
+    },
+    runtime: {
+      getContexts: async () => (isOpen ? [{}] : []),
+      sendMessage: async (m) => { calls.push(['send', m]); return reply; }
+    }
+  };
+}
+
+test('Chromium: opens the offscreen document, writes through it, then closes it', async () => {
+  const f = fakeOffscreen();
+  await createOffscreenWriter(f)('');
+  assert.deepEqual(f.calls.map(([name]) => name), ['create', 'send', 'close']);
+  assert.deepEqual(f.calls[0][1].reasons, ['CLIPBOARD']);
+  assert.deepEqual(f.calls[1][1], { type: MESSAGES.offscreenWrite, text: '' });
+});
+
+test('Chromium: reuses an offscreen document that is already open', async () => {
+  const f = fakeOffscreen({ open: true });
+  await createOffscreenWriter(f)('');
+  assert.deepEqual(f.calls.map(([name]) => name), ['send', 'close']);
+});
+
+test('Chromium: a failed write rejects but still closes the document', async () => {
+  const f = fakeOffscreen({ reply: { ok: false, error: 'denied' } });
+  await assert.rejects(createOffscreenWriter(f)(''), /denied/);
+  assert.equal(f.calls.at(-1)[0], 'close');
 });

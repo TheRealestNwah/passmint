@@ -14,6 +14,11 @@
  * warning, the wipe cannot check that the clipboard still holds the password.
  * It clears whatever is there at that moment, and the setting says so.
  *
+ * Chromium runs the background as a service worker, which has no DOM and so no
+ * clipboard. There the write goes through an offscreen document (reason
+ * CLIPBOARD, see chrome/offscreen.js) that is opened for the write and closed
+ * straight after.
+ *
  * Nothing here touches a browser API directly; the alarms API and the
  * clipboard writer are passed in, so the logic runs under Node.
  */
@@ -23,7 +28,8 @@ export const CLEAR_DELAY_MS = 30_000;
 
 export const MESSAGES = Object.freeze({
   schedule: 'passmint:schedule-clear',
-  cancel: 'passmint:cancel-clear'
+  cancel: 'passmint:cancel-clear',
+  offscreenWrite: 'passmint:offscreen-write'
 });
 
 /**
@@ -61,4 +67,32 @@ export function createClipboardClearer({ alarms, writeClipboard, now = Date.now 
     }
   };
   return clearer;
+}
+
+/**
+ * Writer for Chromium: opens the offscreen document, has it write the text,
+ * then closes it. The document is not kept around, so nothing lingers.
+ *
+ * @param {object} deps
+ * @param {{ createDocument(o: object): Promise<void>, closeDocument(): Promise<void> }} deps.offscreen
+ * @param {{ getContexts(f: object): Promise<unknown[]>, sendMessage(m: object): Promise<any> }} deps.runtime
+ * @param {string} [deps.url]
+ */
+export function createOffscreenWriter({ offscreen, runtime, url = 'offscreen.html' }) {
+  return async function writeClipboard(text) {
+    const open = await runtime.getContexts({ contextTypes: ['OFFSCREEN_DOCUMENT'] });
+    if (open.length === 0) {
+      await offscreen.createDocument({
+        url,
+        reasons: ['CLIPBOARD'],
+        justification: 'Clear the copied password from the clipboard.'
+      });
+    }
+    try {
+      const reply = await runtime.sendMessage({ type: MESSAGES.offscreenWrite, text });
+      if (!reply?.ok) throw new Error(reply?.error ?? 'The offscreen document did not confirm the write.');
+    } finally {
+      await offscreen.closeDocument().catch(() => {});
+    }
+  };
 }
