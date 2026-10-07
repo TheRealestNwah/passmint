@@ -1,8 +1,13 @@
 # Passmint
 
-A Firefox extension that generates strong passwords and passphrases, with enough
-knobs to satisfy whatever arbitrary rules the site you're signing up for has
-decided on today.
+A Firefox and Safari extension that generates strong passwords and passphrases,
+with enough knobs to satisfy whatever arbitrary rules the site you're signing up
+for has decided on today.
+
+| Browser | Status |
+| --- | --- |
+| Firefox (desktop and Android) | Published on addons.mozilla.org |
+| Safari (macOS) | Works; build it yourself for now, see [docs/safari.md](docs/safari.md) |
 
 Everything happens in the popup, apart from one optional job for a small
 background script: clearing the clipboard after you copy (see
@@ -11,7 +16,7 @@ no telemetry — the extension requests four permissions, all of them local:
 `storage` for your settings, `clipboardWrite` for the copy button and the
 clear, `alarms` to time the clear, and `theme` to read the colours of your
 current Firefox theme. None of the four carry an install-time warning, and
-`theme` is read-only.
+`theme` is read-only. (Safari has no theme API, so its build drops `theme`.)
 
 > **Built with AI.** Passmint's code, tests and documentation were written by
 > Claude, an AI model from Anthropic, directed and tested by the maintainer.
@@ -185,7 +190,14 @@ characters to the front.
 
 ## Install
 
-### From source, temporarily
+### Safari (macOS)
+
+Safari extensions ship inside a small native app, so for now you build it
+yourself in Xcode (a free Apple ID is enough). Safari gets one look, a Liquid
+Glass style, and hides the clipboard auto-clear, which Safari can't do reliably.
+Steps and details are in [docs/safari.md](docs/safari.md).
+
+### Firefox, from source, temporarily
 
 1. Clone this repo.
 2. Open `about:debugging#/runtime/this-firefox` in Firefox.
@@ -193,7 +205,7 @@ characters to the front.
 
 The add-on stays until you restart Firefox.
 
-### From source, permanently
+### Firefox, from source, permanently
 
 Temporary add-ons are unsigned, and release Firefox won't keep unsigned
 extensions installed. To install permanently you can either:
@@ -218,10 +230,11 @@ The package lands in `web-ext-artifacts/`.
 
 ```bash
 npm install
-npm test            # 74 unit tests, node:test, no browser needed
-npm run test:popup  # 34 popup tests in headless Chromium (Playwright)
+npm test            # 85 unit tests, node:test, no browser needed
+npm run test:popup  # 40 popup tests in headless Chromium (Playwright)
 npm run lint        # web-ext lint against the Mozilla add-on rules
 npm start           # launch a scratch Firefox profile with the add-on loaded
+npm run build:safari # Safari-ready folder in build/safari/ (the Xcode step needs a Mac)
 ```
 
 The generator is a plain ES module with no extension APIs in it
@@ -242,6 +255,9 @@ popup/                popup.html, popup.css, popup.js
 src/generator.js      generation, entropy, strength — no browser APIs
 src/theme.js          browser theme -> CSS custom properties
 src/appearance.js     style/mode/accent choice, Waterfox detection
+src/platform.js       Safari detection
+safari/               Safari manifest transform, build script, icon renderer
+icons/png/            PNG icons for the Safari build
 popup/boot.js         repaints the cached look before first paint
 background.js         event page that clears the clipboard on a timer
 src/clipboard.js      scheduling for the clipboard clear

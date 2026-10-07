@@ -1,7 +1,7 @@
 {
   "name": "passmint",
   "version": "1.3.0",
-  "description": "Firefox extension that generates strong passwords and passphrases with fine-grained complexity controls.",
+  "description": "Firefox and Safari extension that generates strong passwords and passphrases with fine-grained complexity controls.",
   "type": "module",
   "private": true,
   "license": "MIT",
