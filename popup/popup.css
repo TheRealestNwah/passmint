@@ -773,6 +773,7 @@ code {
   --radius-lg: 22px;
   --radius-pill: 999px;
   --radius-pill-inner: 999px;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
 
   --glass-wallpaper:
     radial-gradient(at 12% 0%, #c9e0ff 0, transparent 55%),
@@ -860,7 +861,8 @@ code {
 }
 
 :root[data-style="glass"] body {
-  font: -apple-system-body, -apple-system, "SF Pro Text", system-ui, sans-serif;
+  /* Not the `font` shorthand: a system-font keyword cannot take a family list. */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   font-size: 13px;
   line-height: 1.45;
   background: var(--glass-wallpaper);
