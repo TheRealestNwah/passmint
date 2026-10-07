@@ -290,6 +290,42 @@ describe('storage', () => {
   });
 });
 
+describe('Safari look', () => {
+  const SAFARI = { extensionUrl: 'safari-web-extension://test/' };
+
+  test('is always Liquid Glass, and the style picker is gone', async () => {
+    // A stored Waterfox preference must not win.
+    const stored = { [APPEARANCE_KEY]: { style: 'nova', mode: 'system', accent: 'pine' } };
+    await withPopup({ ...SAFARI, stored }, async (page) => {
+      assert.equal((await rootData(page)).style, 'glass');
+      await page.locator('#appearance-toggle').click();
+      assert.equal(await isHidden(page, '#style-row'), true);
+      assert.equal(await isHidden(page, '#style-hint'), true);
+      assert.equal(await isHidden(page, '#accent-block'), true);
+      assert.equal(await isHidden(page, '#mode-label'), false, 'light/dark mode stays');
+    });
+  });
+
+  test('glass surfaces really blur and are translucent', async () => {
+    await withPopup(SAFARI, async (page) => {
+      const panel = await page.locator('.result').evaluate((el) => {
+        const cs = getComputedStyle(el);
+        return { filter: cs.backdropFilter, bg: cs.backgroundColor };
+      });
+      assert.match(panel.filter, /blur/);
+      assert.match(panel.bg, /rgba\(.*0\.\d+\)/);
+    });
+  });
+
+  test('Firefox keeps its own look and the style picker', async () => {
+    await withPopup({}, async (page) => {
+      assert.notEqual((await rootData(page)).style, 'glass');
+      await page.locator('#appearance-toggle').click();
+      assert.equal(await isHidden(page, '#style-row'), false);
+    });
+  });
+});
+
 describe('Appearance panel', () => {
   const pick = (page, name, value) =>
     page.locator(`input[name="${name}"][value="${value}"]`).check({ force: true });

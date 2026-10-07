@@ -27,7 +27,7 @@ above on every PR.
 - `background.js` — event page that clears the clipboard via an alarm.
 - `test/` — `node:test` suites; `popup-harness.js` stubs the extension APIs for Playwright.
 - `safari/` — Safari manifest transform, build script and PNG icon renderer (`npm run build:safari`, `icons:safari`); see docs/safari.md.
-- `src/platform.js` hides the clipboard auto-clear setting in Safari.
+- `src/platform.js` detects Safari: it hides the clipboard auto-clear setting and forces the Liquid Glass look (`data-style="glass"`).
 - `.github/workflows/` — `ci.yml`, `release.yml` (manual; tags and submits to AMO), `backfill-release.yml`.
 
 ## Gotchas

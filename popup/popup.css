@@ -734,6 +734,215 @@ code {
   border: 1px solid var(--border);
 }
 
+/* ── Liquid Glass (Safari only) ──────────────────────────────────────
+ * src/appearance.js sets data-style="glass" whenever the popup runs in Safari,
+ * and never anywhere else. Same three colour states as the blocks above.
+ * Surfaces are translucent and blurred over a soft gradient, edged with a
+ * specular highlight, with continuous rounded shapes and the system font.
+ * The glass rules sit under :root[data-style="glass"] so they win over Photon.
+ */
+:root[data-style="glass"] {
+  --bg: #eef1f8;
+  --bg-sunken: rgba(255, 255, 255, 0.35);
+  --bg-raised: rgba(255, 255, 255, 0.5);
+  --border: rgba(255, 255, 255, 0.65);
+  --border-strong: rgba(60, 60, 67, 0.45);
+  --text: #1d1d1f;
+  --text-muted: #55555c;
+
+  --button-bg: rgba(255, 255, 255, 0.5);
+  --surface-hover: rgba(255, 255, 255, 0.7);
+  --surface-active: rgba(255, 255, 255, 0.85);
+
+  --accent: #0071e3;
+  --accent-hover: #0066cc;
+  --accent-active: #005bb5;
+  --accent-text: #ffffff;
+  --focus-ring: #0071e3;
+
+  --danger: #c4001a;
+  --success: #1a7f37;
+
+  --s0: #d70015;
+  --s1: #c93400;
+  --s2: #8f6a00;
+  --s3: #1a7f37;
+  --s4: #0071e3;
+
+  --radius: 12px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+  --radius-pill-inner: 999px;
+
+  --glass-wallpaper:
+    radial-gradient(at 12% 0%, #c9e0ff 0, transparent 55%),
+    radial-gradient(at 100% 28%, #ecd6ff 0, transparent 50%),
+    radial-gradient(at 0% 100%, #d0f3e6 0, transparent 55%),
+    #eef1f8;
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+  --glass-drop: 0 6px 20px rgba(30, 40, 80, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-style="glass"]:not([data-theme="light"]) {
+    --bg: #14151c;
+    --bg-sunken: rgba(255, 255, 255, 0.05);
+    --bg-raised: rgba(255, 255, 255, 0.1);
+    --border: rgba(255, 255, 255, 0.16);
+    --border-strong: rgba(235, 235, 245, 0.45);
+    --text: #f5f5f7;
+    --text-muted: #b4b4bf;
+
+    --button-bg: rgba(255, 255, 255, 0.1);
+    --surface-hover: rgba(255, 255, 255, 0.18);
+    --surface-active: rgba(255, 255, 255, 0.26);
+
+    --accent: #64a8ff;
+    --accent-hover: #7db6ff;
+    --accent-active: #95c4ff;
+    --accent-text: #0a0a0c;
+    --focus-ring: #64a8ff;
+
+    --danger: #ff8a84;
+    --success: #5fdc85;
+
+    --s0: #ff8a84;
+    --s1: #ffb36b;
+    --s2: #ffe07a;
+    --s3: #5fdc85;
+    --s4: #64a8ff;
+
+    --glass-wallpaper:
+      radial-gradient(at 12% 0%, #26407a 0, transparent 55%),
+      radial-gradient(at 100% 28%, #4a2a73 0, transparent 50%),
+      radial-gradient(at 0% 100%, #1b5a52 0, transparent 55%),
+      #14151c;
+    --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+    --glass-drop: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+:root[data-style="glass"][data-theme="dark"] {
+  --bg: #14151c;
+  --bg-sunken: rgba(255, 255, 255, 0.05);
+  --bg-raised: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.16);
+  --border-strong: rgba(235, 235, 245, 0.45);
+  --text: #f5f5f7;
+  --text-muted: #b4b4bf;
+
+  --button-bg: rgba(255, 255, 255, 0.1);
+  --surface-hover: rgba(255, 255, 255, 0.18);
+  --surface-active: rgba(255, 255, 255, 0.26);
+
+  --accent: #64a8ff;
+  --accent-hover: #7db6ff;
+  --accent-active: #95c4ff;
+  --accent-text: #0a0a0c;
+  --focus-ring: #64a8ff;
+
+  --danger: #ff8a84;
+  --success: #5fdc85;
+
+  --s0: #ff8a84;
+  --s1: #ffb36b;
+  --s2: #ffe07a;
+  --s3: #5fdc85;
+  --s4: #64a8ff;
+
+  --glass-wallpaper:
+    radial-gradient(at 12% 0%, #26407a 0, transparent 55%),
+    radial-gradient(at 100% 28%, #4a2a73 0, transparent 50%),
+    radial-gradient(at 0% 100%, #1b5a52 0, transparent 55%),
+    #14151c;
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  --glass-drop: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-style="glass"] body {
+  font: -apple-system-body, -apple-system, "SF Pro Text", system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  background: var(--glass-wallpaper);
+  background-attachment: fixed;
+}
+
+/* The glass itself: every raised surface blurs what is behind it. */
+:root[data-style="glass"] .panel,
+:root[data-style="glass"] .result,
+:root[data-style="glass"] .tabs,
+:root[data-style="glass"] .segmented,
+:root[data-style="glass"] .chip,
+:root[data-style="glass"] .btn:not(.btn-primary):not(.btn-ghost),
+:root[data-style="glass"] input[type="text"] {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  box-shadow: var(--glass-shine), var(--glass-drop);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+}
+
+:root[data-style="glass"] .panel {
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: var(--radius-lg);
+}
+
+:root[data-style="glass"] .tabs,
+:root[data-style="glass"] .segmented {
+  padding: 3px;
+  gap: 2px;
+  border-radius: var(--radius-pill);
+}
+
+:root[data-style="glass"] .tab,
+:root[data-style="glass"] .segmented-option {
+  border: 0;
+  border-radius: var(--radius-pill);
+}
+
+/* The selected segment is a brighter lens sitting in the track. */
+:root[data-style="glass"] .tab.is-active,
+:root[data-style="glass"] .segmented-option:has(input:checked) {
+  background: var(--surface-active);
+  color: var(--text);
+  box-shadow: var(--glass-shine), 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-style="glass"] .btn-primary {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--glass-shine), 0 4px 14px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+:root[data-style="glass"] .btn,
+:root[data-style="glass"] .chip {
+  border-radius: var(--radius-pill);
+}
+
+/* Without backdrop-filter there is nothing to see through, so go opaque. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root[data-style="glass"] {
+    --bg-raised: var(--bg);
+    --button-bg: var(--bg);
+  }
+}
+
+/* Reduce Transparency is a real macOS setting; honour it. */
+@media (prefers-reduced-transparency: reduce) {
+  :root[data-style="glass"] .panel,
+  :root[data-style="glass"] .result,
+  :root[data-style="glass"] .tabs,
+  :root[data-style="glass"] .segmented,
+  :root[data-style="glass"] .chip,
+  :root[data-style="glass"] .btn,
+  :root[data-style="glass"] input[type="text"] {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--bg);
+  }
+}
+
 /* ── Footer ──────────────────────────────────────────────────────── */
 
 .footer {

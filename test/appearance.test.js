@@ -7,6 +7,7 @@ import {
   ACCENT_TEXT,
   APPEARANCE_DEFAULTS,
   NOVA_SURFACES,
+  STYLE_PREFS,
   accentTokens,
   applyAppearance,
   isWaterfox,
@@ -243,4 +244,26 @@ test('the snapshot carries everything boot.js needs to repaint', () => {
   assert.equal(snap.style, 'nova');
   assert.equal(snap.theme, 'dark');
   assert.match(snap.css, /--nova-accent-d: rgb\(143, 200, 255\)/);
+});
+
+test('Safari always gets glass, whatever the stored preference or browser name', () => {
+  for (const pref of ['auto', 'photon', 'nova']) {
+    assert.equal(resolveStyle(pref, 'Firefox', true), 'glass');
+    assert.equal(resolveStyle(pref, 'Waterfox', true), 'glass');
+  }
+});
+
+test('glass is never offered or chosen outside Safari', () => {
+  assert.ok(!STYLE_PREFS.includes('glass'));
+  for (const pref of ['auto', 'photon', 'nova', 'glass']) {
+    assert.notEqual(resolveStyle(pref, 'Firefox'), 'glass');
+  }
+});
+
+test('applyAppearance in glass stamps the style and keeps light/dark following the OS', () => {
+  const root = fakeRoot();
+  applyAppearance(root, { style: 'glass', mode: 'system', accent: 'default' }, null);
+  assert.equal(root.dataset.style, 'glass');
+  assert.equal(root.dataset.theme, undefined);
+  assert.equal(root.props.size, 0, 'no inline tokens');
 });
