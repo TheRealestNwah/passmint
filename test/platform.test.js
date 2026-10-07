@@ -46,6 +46,6 @@ test('names the browser family, defaulting to Firefox', () => {
   assert.equal(browserFamily(undefined), 'firefox');
 });
 
-test('auto-clear is withheld in Chromium until it is built there', () => {
-  assert.equal(supportsClipboardAutoClear(runtimeAt('chrome-extension://abc/')), false);
+test('auto-clear is offered in Chromium, through an offscreen document', () => {
+  assert.equal(supportsClipboardAutoClear(runtimeAt('chrome-extension://abc/')), true);
 });

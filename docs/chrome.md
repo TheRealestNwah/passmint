@@ -38,11 +38,17 @@ npm run build:chrome
   `popup/popup.css` (a test fails until they agree). Every pairing is checked for
   contrast. Firefox users never see these looks, and Chromium users never see
   Photon or Nova.
-- The "Clear clipboard after 30s" setting is hidden for now. A service worker has
-  no clipboard access, so it needs an offscreen document; tracked in issue #30.
+- The clipboard auto-clear goes through an offscreen document. A service worker has
+  no clipboard access, so when the alarm fires `background.js` opens
+  `offscreen.html` (reason `CLIPBOARD`), asks it to write an empty string, and
+  closes it again. This adds the `offscreen` permission, which carries no install
+  warning. The two offscreen files live in `chrome/` and are copied into the build
+  by `chrome/build.mjs`.
 
 ## Verification
 
 Checked by loading the built extension into real Microsoft Edge (headless):
 the service worker starts, Edge is detected, the chosen look persists across a
-reload, and the page logs no errors. Chrome, Brave and Opera haven't been tried.
+reload, and the page logs no errors. The auto-clear was also checked there: a
+copied value was gone 30 seconds after the schedule message, and no offscreen
+document was left open. Chrome, Brave and Opera haven't been tried.

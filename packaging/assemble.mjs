@@ -5,7 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 
-export function assemble(target, toManifest) {
+/** `extras` maps a file in the repo to its place in the build, e.g. { 'chrome/offscreen.js': 'offscreen.js' }. */
+export function assemble(target, toManifest, extras = {}) {
   const out = `${root}build/${target}/`;
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { recursive: true });
@@ -13,6 +14,8 @@ export function assemble(target, toManifest) {
   for (const entry of ['background.js', 'popup', 'src', 'icons']) {
     cpSync(`${root}${entry}`, `${out}${entry}`, { recursive: true });
   }
+
+  for (const [from, to] of Object.entries(extras)) cpSync(`${root}${from}`, `${out}${to}`);
 
   const manifest = JSON.parse(readFileSync(`${root}manifest.json`, 'utf8'));
   writeFileSync(`${out}manifest.json`, `${JSON.stringify(toManifest(manifest), null, 2)}\n`);

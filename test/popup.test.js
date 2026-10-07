@@ -383,9 +383,9 @@ describe('Chromium looks', () => {
     });
   });
 
-  test('the clipboard auto-clear is hidden for now', async () => {
+  test('the clipboard auto-clear is offered', async () => {
     await withPopup(CHROMIUM, async (page) => {
-      assert.equal(await isHidden(page, '.auto-clear'), true);
+      assert.equal(await isHidden(page, '.auto-clear'), false);
     });
   });
 

@@ -36,11 +36,11 @@ export function browserFamily(runtime) {
 /**
  * The 30-second clipboard clear runs from an alarm in the background page, with
  * no user gesture behind it. Safari requires a gesture for clipboard writes, and
- * iOS has no equivalent at all, so the clear cannot be relied on there. In
- * Chromium the background is a service worker with no clipboard access, and
- * the offscreen-document route is not built yet. The setting is withheld
- * rather than promising something that may not happen.
+ * iOS has no equivalent at all, so the clear cannot be relied on there, and the
+ * setting is withheld rather than promising something that may not happen.
+ * Chromium's service worker has no clipboard, so it writes through an
+ * offscreen document instead (see src/clipboard.js).
  */
 export function supportsClipboardAutoClear(runtime) {
-  return browserFamily(runtime) === 'firefox';
+  return browserFamily(runtime) !== 'safari';
 }

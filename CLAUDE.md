@@ -28,8 +28,8 @@ above on every PR.
 - `background.js` — event page that clears the clipboard via an alarm.
 - `test/` — `node:test` suites; `popup-harness.js` stubs the extension APIs for Playwright.
 - `safari/` — Safari manifest transform, build script and PNG icon renderer (`npm run build:safari`, `icons:safari`); see docs/safari.md.
-- `chrome/` — Chromium manifest transform and build script; `chrome/gen-tokens.mjs` generates the Chromium palette CSS in `popup/popup.css` from `CHROMIUM_PALETTES` (a test fails if they drift). `packaging/` is the shared build helper. See docs/chrome.md.
-- `src/platform.js` detects Safari and Chromium: it hides the clipboard auto-clear setting and forces the Liquid Glass look (`data-style="glass"`).
+- `chrome/` — Chromium manifest transform, build script and the offscreen document (`offscreen.html/js`) that does the clipboard clear, since a service worker has no clipboard; `chrome/gen-tokens.mjs` generates the Chromium palette CSS in `popup/popup.css` from `CHROMIUM_PALETTES` (a test fails if they drift). `packaging/` is the shared build helper. See docs/chrome.md.
+- `src/platform.js` detects Safari and Chromium: it forces the Liquid Glass look (`data-style="glass"`); Safari also hides the clipboard auto-clear setting.
 - `.github/workflows/` — `ci.yml`, `release.yml` (manual; tags and submits to AMO), `backfill-release.yml`.
 
 ## Gotchas
