@@ -1,7 +1,8 @@
-# Safari (work in progress)
+# Safari (macOS)
 
 Safari runs the same extension code. Only the manifest differs, and Safari needs
-a native wrapper app built in Xcode, so the last steps need a Mac.
+a native wrapper app built in Xcode, so the build needs a Mac. It has been tried
+on real Safari and works. It isn't on the App Store yet, so you build it yourself.
 
 ## Build and run locally (Mac)
 
@@ -33,7 +34,6 @@ open build/safari-xcode/Passmint/Passmint.xcodeproj
   Light/dark/system mode still works. The design follows macOS 26's Liquid Glass;
   I don't have specifics for macOS 27, so revisit when it ships. It honours
   Reduce Transparency, and falls back to opaque where `backdrop-filter` is missing.
-  Only checked in headless Chromium, not in Safari itself.
 - Icons are PNGs (`icons/png/`, rendered from the SVGs by `npm run icons:safari`;
   commit the result). The toolbar PNG uses a fixed mid-grey, since `context-fill`
   is Firefox-only.
@@ -42,9 +42,10 @@ open build/safari-xcode/Passmint/Passmint.xcodeproj
   generally requires one for clipboard writes; iOS has no equivalent. A saved
   setting from elsewhere is ignored there, and copying itself is unaffected.
 
-## Open questions (untested, need a Mac)
+## Still open
 
-- Whether the auto-clear could actually work on macOS Safari. If testing on a
-  Mac shows it does, flip `supportsClipboardAutoClear` in `src/platform.js`.
-- Whether the mid-grey toolbar icon reads well on both light and dark toolbars.
-- App Store distribution needs a paid Apple Developer account.
+- Whether the auto-clear could work on macOS Safari. It is hidden for now; if it
+  turns out to work, flip `supportsClipboardAutoClear` in `src/platform.js`.
+- App Store distribution needs a paid Apple Developer account and a proper bundle
+  identifier (the converter's default is `com.github.Passmint`).
+- iOS isn't built or tested; CI converts and builds the macOS app only.

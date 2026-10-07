@@ -1,7 +1,7 @@
 # Passmint
 
-Firefox MV3 extension (popup + small event-page background) that generates
-passwords and passphrases. No network access, no telemetry. See README.md for
+Firefox and Safari MV3 extension (popup + small event-page background) that
+generates passwords and passphrases. No network access, no telemetry. See README.md for
 the user-facing description.
 
 ## Commands
