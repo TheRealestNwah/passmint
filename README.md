@@ -1,13 +1,14 @@
 # Passmint
 
-A Firefox and Safari extension that generates strong passwords and passphrases,
-with enough knobs to satisfy whatever arbitrary rules the site you're signing up
+A Firefox, Safari and Chromium (Chrome, Edge, Brave, Opera) extension that
+generates strong passwords and passphrases, with enough knobs to satisfy whatever arbitrary rules the site you're signing up
 for has decided on today.
 
 | Browser | Status |
 | --- | --- |
 | Firefox (desktop and Android) | Published on addons.mozilla.org |
 | Safari (macOS) | Works; build it yourself for now, see [docs/safari.md](docs/safari.md) |
+| Chrome, Edge, Brave, Opera | Builds and loads unpacked, with a look for each; not on any store yet, see [docs/chrome.md](docs/chrome.md) |
 
 Everything happens in the popup, apart from one optional job for a small
 background script: clearing the clipboard after you copy (see
@@ -197,6 +198,12 @@ yourself in Xcode (a free Apple ID is enough). Safari gets one look, a Liquid
 Glass style, and hides the clipboard auto-clear, which Safari can't do reliably.
 Steps and details are in [docs/safari.md](docs/safari.md).
 
+### Chrome, Edge, Brave, Opera
+
+`npm run build:chrome`, then load `build/chrome/` unpacked from your browser's
+extensions page. Each browser gets its own look; the clipboard auto-clear isn't
+available there yet. See [docs/chrome.md](docs/chrome.md).
+
 ### Firefox, from source, temporarily
 
 1. Clone this repo.
@@ -230,11 +237,12 @@ The package lands in `web-ext-artifacts/`.
 
 ```bash
 npm install
-npm test            # 85 unit tests, node:test, no browser needed
-npm run test:popup  # 40 popup tests in headless Chromium (Playwright)
+npm test            # 99 unit tests, node:test, no browser needed
+npm run test:popup  # 46 popup tests in headless Chromium (Playwright)
 npm run lint        # web-ext lint against the Mozilla add-on rules
 npm start           # launch a scratch Firefox profile with the add-on loaded
 npm run build:safari # Safari-ready folder in build/safari/ (the Xcode step needs a Mac)
+npm run build:chrome # Chromium folder in build/chrome/ and a zip for the stores
 ```
 
 The generator is a plain ES module with no extension APIs in it
@@ -257,6 +265,8 @@ src/theme.js          browser theme -> CSS custom properties
 src/appearance.js     style/mode/accent choice, Waterfox detection
 src/platform.js       Safari detection
 safari/               Safari manifest transform, build script, icon renderer
+chrome/                Chromium manifest transform, build script, palette CSS generator
+packaging/            shared build helper for safari/ and chrome/
 icons/png/            PNG icons for the Safari build
 popup/boot.js         repaints the cached look before first paint
 background.js         event page that clears the clipboard on a timer

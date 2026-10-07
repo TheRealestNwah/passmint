@@ -6,16 +6,20 @@ import {
   ACCENTS,
   ACCENT_TEXT,
   APPEARANCE_DEFAULTS,
+  CHROMIUM_PALETTES,
+  CHROMIUM_STYLE_IDS,
   NOVA_SURFACES,
   STYLE_PREFS,
   accentTokens,
   applyAppearance,
+  chromiumStyleFor,
   isWaterfox,
   resolveStyle,
   sanitizePrefs,
   takeSnapshot
 } from '../src/appearance.js';
 import { contrastRatio, normalizeColor } from '../src/theme.js';
+import { chromiumCss } from '../chrome/gen-tokens.mjs';
 
 const CSS = readFileSync(new URL('../popup/popup.css', import.meta.url), 'utf8');
 
@@ -248,8 +252,8 @@ test('the snapshot carries everything boot.js needs to repaint', () => {
 
 test('Safari always gets glass, whatever the stored preference or browser name', () => {
   for (const pref of ['auto', 'photon', 'nova']) {
-    assert.equal(resolveStyle(pref, 'Firefox', true), 'glass');
-    assert.equal(resolveStyle(pref, 'Waterfox', true), 'glass');
+    assert.equal(resolveStyle(pref, 'Firefox', 'safari'), 'glass');
+    assert.equal(resolveStyle(pref, 'Waterfox', 'safari'), 'glass');
   }
 });
 
@@ -266,4 +270,60 @@ test('applyAppearance in glass stamps the style and keeps light/dark following t
   assert.equal(root.dataset.style, 'glass');
   assert.equal(root.dataset.theme, undefined);
   assert.equal(root.props.size, 0, 'no inline tokens');
+});
+
+test('each Chromium browser maps to its own look; Opera maps to GX', () => {
+  assert.equal(chromiumStyleFor('Chrome'), 'chrome');
+  assert.equal(chromiumStyleFor('Edge'), 'edge');
+  assert.equal(chromiumStyleFor('Microsoft Edge'), 'edge');
+  assert.equal(chromiumStyleFor('Brave'), 'brave');
+  assert.equal(chromiumStyleFor('Opera'), 'gx');
+  assert.equal(chromiumStyleFor(''), 'chrome');
+  assert.equal(chromiumStyleFor(undefined), 'chrome');
+});
+
+test('in Chromium, auto follows the browser and a chosen look wins', () => {
+  assert.equal(resolveStyle('auto', 'Edge', 'chromium'), 'edge');
+  assert.equal(resolveStyle('auto', 'Opera', 'chromium'), 'gx');
+  assert.equal(resolveStyle('brave', 'Chrome', 'chromium'), 'brave');
+  for (const id of CHROMIUM_STYLE_IDS) assert.equal(resolveStyle(id, '', 'chromium'), id);
+});
+
+test('each family only ever paints its own looks', () => {
+  // A Firefox preference carried into Chromium falls back to auto.
+  assert.equal(resolveStyle('nova', 'Edge', 'chromium'), 'edge');
+  assert.equal(resolveStyle('photon', '', 'chromium'), 'chrome');
+  // And a Chromium preference in Firefox is ignored.
+  assert.equal(resolveStyle('edge', 'Firefox', 'firefox'), 'photon');
+  assert.equal(resolveStyle('gx', 'Waterfox', 'firefox'), 'nova');
+  assert.equal(resolveStyle('edge', 'Firefox'), 'photon');
+});
+
+test('sanitizePrefs accepts the Chromium looks', () => {
+  for (const id of CHROMIUM_STYLE_IDS) {
+    assert.equal(sanitizePrefs({ style: id }).style, id);
+  }
+});
+
+test('Chromium palettes are readable in every browser and mode', () => {
+  for (const [id, modes] of Object.entries(CHROMIUM_PALETTES)) {
+    for (const [mode, p] of Object.entries(modes)) {
+      const c = (hex) => normalizeColor(hex);
+      for (const surface of ['bg', 'sunken', 'raised']) {
+        assert.ok(contrastRatio(c(p.text), c(p[surface])) >= 4.5, `${id} ${mode}: text on ${surface}`);
+        assert.ok(contrastRatio(c(p.muted), c(p[surface])) >= 4.5, `${id} ${mode}: muted on ${surface}`);
+      }
+      assert.ok(contrastRatio(c(p.accentText), c(p.accent)) >= 4.5, `${id} ${mode}: text on accent`);
+      assert.ok(contrastRatio(c(p.accent), c(p.bg)) >= 3, `${id} ${mode}: accent against bg`);
+      assert.ok(contrastRatio(c(p.borderStrong), c(p.bg)) >= 3, `${id} ${mode}: strong border`);
+    }
+  }
+});
+
+test("popup.css's Chromium palettes are what chrome/gen-tokens.mjs generates", () => {
+  const normalized = CSS.replace(/\r\n/g, '\n');
+  assert.ok(
+    normalized.includes(chromiumCss()),
+    'popup.css is out of step with CHROMIUM_PALETTES: paste the output of `node chrome/gen-tokens.mjs` over its "Chromium palettes" section'
+  );
 });

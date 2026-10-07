@@ -5,10 +5,10 @@
 const UNSUPPORTED_PERMISSIONS = new Set(['theme']);
 
 /** PNGs rendered by `npm run icons:safari`; see safari/make-icons.mjs. */
-const APP_ICONS = Object.fromEntries(
+export const APP_ICONS = Object.fromEntries(
   [48, 96, 128, 256, 512].map((size) => [size, `icons/png/icon-${size}.png`])
 );
-const TOOLBAR_ICONS = Object.fromEntries(
+export const TOOLBAR_ICONS = Object.fromEntries(
   [16, 32, 48].map((size) => [size, `icons/png/toolbar-${size}.png`])
 );
 

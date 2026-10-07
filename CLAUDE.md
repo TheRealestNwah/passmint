@@ -1,7 +1,7 @@
 # Passmint
 
-Firefox and Safari MV3 extension (popup + small event-page background) that
-generates passwords and passphrases. No network access, no telemetry. See README.md for
+Firefox, Safari and Chromium (Chrome, Edge, Brave, Opera) MV3 extension (popup +
+small background script) that generates passwords and passphrases. No network access, no telemetry. See README.md for
 the user-facing description.
 
 ## Commands
@@ -13,6 +13,7 @@ npm run test:popup   # popup tests in headless Chromium; needs `npx playwright i
 npm run lint         # web-ext lint
 npm run build        # unsigned package into web-ext-artifacts/
 npm run build:safari  # Safari-ready folder in build/safari/ (Xcode step needs a Mac)
+npm run build:chrome  # Chromium folder in build/chrome/ plus a store zip in web-ext-artifacts/chrome/
 npm run check-versions  # manifest.json and package.json versions must match
 ```
 
@@ -27,7 +28,8 @@ above on every PR.
 - `background.js` — event page that clears the clipboard via an alarm.
 - `test/` — `node:test` suites; `popup-harness.js` stubs the extension APIs for Playwright.
 - `safari/` — Safari manifest transform, build script and PNG icon renderer (`npm run build:safari`, `icons:safari`); see docs/safari.md.
-- `src/platform.js` detects Safari: it hides the clipboard auto-clear setting and forces the Liquid Glass look (`data-style="glass"`).
+- `chrome/` — Chromium manifest transform and build script; `chrome/gen-tokens.mjs` generates the Chromium palette CSS in `popup/popup.css` from `CHROMIUM_PALETTES` (a test fails if they drift). `packaging/` is the shared build helper. See docs/chrome.md.
+- `src/platform.js` detects Safari and Chromium: it hides the clipboard auto-clear setting and forces the Liquid Glass look (`data-style="glass"`).
 - `.github/workflows/` — `ci.yml`, `release.yml` (manual; tags and submits to AMO), `backfill-release.yml`.
 
 ## Gotchas

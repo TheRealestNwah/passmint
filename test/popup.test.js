@@ -337,6 +337,69 @@ describe('Safari look', () => {
   });
 });
 
+describe('Chromium looks', () => {
+  const CHROMIUM = { extensionUrl: 'chrome-extension://test/', browserName: null };
+  const EDGE_UA =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0';
+  const OPERA_UA =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 OPR/115.0.0.0';
+
+  test('plain Chromium gets the Chrome look', async () => {
+    await withPopup(CHROMIUM, async (page) => {
+      assert.equal((await rootData(page)).style, 'chrome');
+    });
+  });
+
+  test('Edge, Brave and Opera are detected and each gets its own look', async () => {
+    const cases = [
+      [{ userAgent: EDGE_UA }, 'edge'],
+      [{ brave: true }, 'brave'],
+      [{ userAgent: OPERA_UA }, 'gx']
+    ];
+    for (const [extra, style] of cases) {
+      await withPopup({ ...CHROMIUM, ...extra }, async (page) => {
+        assert.equal((await rootData(page)).style, style);
+      });
+    }
+  });
+
+  test('offers only the Chromium looks, and a chosen one sticks', async () => {
+    await withPopup(CHROMIUM, async (page) => {
+      await page.locator('#appearance-toggle').click();
+      const visible = await page
+        .locator('input[name="appearance-style"]')
+        .evaluateAll((els) => els.filter((e) => !e.closest('label').hidden).map((e) => e.value));
+      assert.deepEqual(visible, ['auto', 'chrome', 'edge', 'brave', 'gx']);
+      await page.locator('input[name="appearance-style"][value="gx"]').check({ force: true });
+      assert.equal((await rootData(page)).style, 'gx');
+      assert.equal(await isHidden(page, '#accent-block'), true, 'Waterfox colours stay Waterfox-only');
+    });
+  });
+
+  test('a Firefox preference left in storage does not leak into Chromium', async () => {
+    const stored = { [APPEARANCE_KEY]: { style: 'nova', mode: 'system', accent: 'pine' } };
+    await withPopup({ ...CHROMIUM, stored }, async (page) => {
+      assert.equal((await rootData(page)).style, 'chrome');
+    });
+  });
+
+  test('the clipboard auto-clear is hidden for now', async () => {
+    await withPopup(CHROMIUM, async (page) => {
+      assert.equal(await isHidden(page, '.auto-clear'), true);
+    });
+  });
+
+  test('Firefox is still offered only the Firefox looks', async () => {
+    await withPopup({}, async (page) => {
+      await page.locator('#appearance-toggle').click();
+      const visible = await page
+        .locator('input[name="appearance-style"]')
+        .evaluateAll((els) => els.filter((e) => !e.closest('label').hidden).map((e) => e.value));
+      assert.deepEqual(visible, ['auto', 'photon', 'nova']);
+    });
+  });
+});
+
 describe('Appearance panel', () => {
   const pick = (page, name, value) =>
     page.locator(`input[name="${name}"][value="${value}"]`).check({ force: true });

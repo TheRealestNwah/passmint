@@ -9,6 +9,10 @@
  *           browser's light/dark state but not a theme's individual colours,
  *           since Nova is a complete palette in its own right.
  *   auto    nova in Waterfox, photon everywhere else.
+ *   chrome, edge, brave, gx
+ *           Chromium-family looks (Chrome, Edge, Brave, Opera GX). Offered, and
+ *           auto-detected, only in Chromium browsers, where the Firefox looks
+ *           are not offered. They use the CHROMIUM_PALETTES table below.
  *   glass   Liquid Glass, for Safari only. It is not a preference: Safari
  *           always gets it and no other browser ever does, so it has no entry
  *           in STYLE_PREFS and the style picker is hidden there.
@@ -23,7 +27,20 @@
 
 import { applyTheme, deriveTokens, normalizeColor, mix, toCss } from './theme.js';
 
-export const STYLE_PREFS = Object.freeze(['auto', 'photon', 'nova']);
+export const FIREFOX_STYLE_IDS = Object.freeze(['photon', 'nova']);
+export const CHROMIUM_STYLE_IDS = Object.freeze(['chrome', 'edge', 'brave', 'gx']);
+export const STYLE_PREFS = Object.freeze(['auto', ...FIREFOX_STYLE_IDS, ...CHROMIUM_STYLE_IDS]);
+
+/** Names shown in the Appearance panel. */
+export const STYLE_NAMES = Object.freeze({
+  photon: 'Firefox',
+  nova: 'Waterfox',
+  chrome: 'Chrome',
+  edge: 'Edge',
+  brave: 'Brave',
+  gx: 'Opera GX',
+  glass: 'Liquid Glass'
+});
 export const MODE_PREFS = Object.freeze(['system', 'light', 'dark']);
 export const APPEARANCE_DEFAULTS = Object.freeze({ style: 'auto', mode: 'system', accent: 'default' });
 
@@ -40,6 +57,34 @@ export const ACCENT_TEXT = Object.freeze({ dark: '#15141a', light: '#ffffff' });
 export const NOVA_SURFACES = Object.freeze({
   light: { bg: '#f7f7fa', sunken: '#efeff4', raised: '#ffffff' },
   dark: { bg: '#1f1e25', sunken: '#17161c', raised: '#2b2a33' }
+});
+
+/**
+ * Chromium-family palettes. popup.css must agree (a test holds the two
+ * together) and every text/accent pairing is checked for contrast. Each browser
+ * has a light and a dark set; popup.css derives hover and pressed states from
+ * these with color-mix.
+ *
+ * Brave's orange is deepened to keep white text on it legible, and Opera GX is
+ * dark-first with Opera's red.
+ */
+export const CHROMIUM_PALETTES = Object.freeze({
+  chrome: {
+    light: { bg: '#ffffff', sunken: '#f0f4f9', raised: '#ffffff', border: '#c4c7c5', borderStrong: '#747775', text: '#1f1f1f', muted: '#444746', accent: '#0b57d0', accentText: '#ffffff' },
+    dark: { bg: '#1f1f1f', sunken: '#131314', raised: '#2d2f31', border: '#444746', borderStrong: '#8e918f', text: '#e3e3e3', muted: '#c4c7c5', accent: '#a8c7fa', accentText: '#062e6f' }
+  },
+  edge: {
+    light: { bg: '#ffffff', sunken: '#f5f5f5', raised: '#ffffff', border: '#e0e0e0', borderStrong: '#8a8a8a', text: '#242424', muted: '#616161', accent: '#0f6cbd', accentText: '#ffffff' },
+    dark: { bg: '#292929', sunken: '#1f1f1f', raised: '#3d3d3d', border: '#525252', borderStrong: '#9e9e9e', text: '#ffffff', muted: '#d6d6d6', accent: '#479ef5', accentText: '#0a1c33' }
+  },
+  brave: {
+    light: { bg: '#ffffff', sunken: '#f3f4f7', raised: '#ffffff', border: '#dfe1e8', borderStrong: '#8a8e9b', text: '#1d1f25', muted: '#5a5e6a', accent: '#c7380f', accentText: '#ffffff' },
+    dark: { bg: '#17171f', sunken: '#101016', raised: '#23232d', border: '#34343f', borderStrong: '#7a7d8c', text: '#f2f2f5', muted: '#b4b6c0', accent: '#ff7a59', accentText: '#1b0f0b' }
+  },
+  gx: {
+    light: { bg: '#f6f3f5', sunken: '#ece8eb', raised: '#ffffff', border: '#d9d3d8', borderStrong: '#8c8590', text: '#14141b', muted: '#575560', accent: '#c8102e', accentText: '#ffffff' },
+    dark: { bg: '#0e0e12', sunken: '#08080b', raised: '#1a1a22', border: '#2c2c38', borderStrong: '#6a6876', text: '#f4f2f5', muted: '#b0aeb8', accent: '#fa1e4e', accentText: '#14141b' }
+  }
 });
 
 /*
@@ -78,10 +123,27 @@ export function isWaterfox(browserName) {
   return /waterfox/i.test(browserName ?? '');
 }
 
-/** Turn the user's style preference into the style actually painted. */
-export function resolveStyle(pref, browserName, safari = false) {
-  if (safari) return 'glass';
-  if (pref === 'photon' || pref === 'nova') return pref;
+/** Which Chromium look a browser name calls for. Opera maps to GX. */
+export function chromiumStyleFor(browserName) {
+  const name = browserName ?? '';
+  if (/edge|edg\b/i.test(name)) return 'edge';
+  if (/brave/i.test(name)) return 'brave';
+  if (/opera|opr/i.test(name)) return 'gx';
+  return 'chrome';
+}
+
+/**
+ * Turn the user's style preference into the style actually painted. `family`
+ * is 'firefox', 'chromium' or 'safari' (src/platform.js). Each family only
+ * ever paints its own looks: a preference from another family falls back to
+ * auto, and Safari always gets glass.
+ */
+export function resolveStyle(pref, browserName, family = 'firefox') {
+  if (family === 'safari') return 'glass';
+  if (family === 'chromium') {
+    return CHROMIUM_STYLE_IDS.includes(pref) ? pref : chromiumStyleFor(browserName);
+  }
+  if (FIREFOX_STYLE_IDS.includes(pref)) return pref;
   return isWaterfox(browserName) ? 'nova' : 'photon';
 }
 
@@ -151,7 +213,8 @@ export function takeSnapshot(root) {
 /**
  * The browser's own name. runtime.getBrowserInfo is Firefox-family only and
  * needs no permission; Waterfox reports "Waterfox" there. The user agent is a
- * weak fallback, since Waterfox mostly presents as Firefox.
+ * weak fallback, since Waterfox mostly presents as Firefox. In Chromium
+ * browsers only the user agent (and navigator.brave) can tell them apart.
  */
 export async function detectBrowserName() {
   try {
@@ -160,5 +223,16 @@ export async function detectBrowserName() {
   } catch {
     /* fall through */
   }
-  return /waterfox/i.test(globalThis.navigator?.userAgent ?? '') ? 'Waterfox' : '';
+  const ua = globalThis.navigator?.userAgent ?? '';
+  if (/waterfox/i.test(ua)) return 'Waterfox';
+  // Chromium family: Edge and Opera say so in the user agent, Brave only
+  // through navigator.brave, and everything else Chromium is Chrome.
+  if (/\bEdg\//.test(ua)) return 'Edge';
+  if (/\bOPR\//.test(ua)) return 'Opera';
+  try {
+    if (await globalThis.navigator?.brave?.isBrave?.()) return 'Brave';
+  } catch {
+    /* fall through */
+  }
+  return /\bChrome\//.test(ua) ? 'Chrome' : '';
 }

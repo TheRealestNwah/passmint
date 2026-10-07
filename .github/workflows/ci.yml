@@ -42,3 +42,12 @@ jobs:
           name: passmint-unsigned
           path: web-ext-artifacts/*.zip
           if-no-files-found: error
+
+      - name: Build Chromium package
+        run: npm run build:chrome
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: passmint-chromium
+          path: web-ext-artifacts/chrome/*.zip
+          if-no-files-found: error
