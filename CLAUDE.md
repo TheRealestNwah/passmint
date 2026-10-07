@@ -12,6 +12,7 @@ npm test             # node:test unit tests, no browser (generator, theme, appea
 npm run test:popup   # popup tests in headless Chromium; needs `npx playwright install chromium` once
 npm run lint         # web-ext lint
 npm run build        # unsigned package into web-ext-artifacts/
+npm run build:safari  # Safari-ready folder in build/safari/ (Xcode step needs a Mac)
 npm run check-versions  # manifest.json and package.json versions must match
 ```
 
@@ -25,6 +26,7 @@ above on every PR.
 - `popup/` — popup UI; the only code besides `background.js` that touches `browser.*`.
 - `background.js` — event page that clears the clipboard via an alarm.
 - `test/` — `node:test` suites; `popup-harness.js` stubs the extension APIs for Playwright.
+- `safari/` — Safari manifest transform and build script (`npm run build:safari`); see docs/safari.md.
 - `.github/workflows/` — `ci.yml`, `release.yml` (manual; tags and submits to AMO), `backfill-release.yml`.
 
 ## Gotchas

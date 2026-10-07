@@ -5,3 +5,4 @@ web-ext-artifacts/
 npm-debug.log*
 .DS_Store
 Thumbs.db
+build/
