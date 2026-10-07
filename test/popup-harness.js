@@ -11,6 +11,7 @@
  *   storage     'browser' (default), 'chrome', 'none', 'get-rejects', 'set-rejects'
  *   stored      initial contents of storage.local
  *   browserName what runtime.getBrowserInfo reports (default 'Firefox')
+ *   extensionUrl what runtime.getURL('') returns (default 'moz-extension://test/')
  *   theme       what theme.getCurrent resolves to (default: no theme)
  *   clipboard   'ok' (default) or 'rejects', to force the textarea fallback
  */
@@ -54,6 +55,7 @@ function installStubs(cfg) {
     sets: [],
     clipboard: [],
     execCommand: [],
+    messages: [],
     themeListeners: [],
     store: JSON.parse(JSON.stringify(cfg.stored ?? {}))
   });
@@ -76,7 +78,13 @@ function installStubs(cfg) {
   } else if (cfg.storage !== 'none') {
     window.browser = {
       storage: { local },
-      runtime: { getBrowserInfo: async () => ({ name: cfg.browserName ?? 'Firefox' }) },
+      runtime: {
+        getBrowserInfo: async () => ({ name: cfg.browserName ?? 'Firefox' }),
+        sendMessage: async (message) => {
+          h.messages.push(message);
+        },
+        getURL: (path) => (cfg.extensionUrl ?? 'moz-extension://test/') + path
+      },
       theme: {
         getCurrent: async () => clone(cfg.theme ?? {}),
         onUpdated: { addListener: (fn) => h.themeListeners.push(fn) }

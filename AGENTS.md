@@ -26,7 +26,8 @@ above on every PR.
 - `popup/` — popup UI; the only code besides `background.js` that touches `browser.*`.
 - `background.js` — event page that clears the clipboard via an alarm.
 - `test/` — `node:test` suites; `popup-harness.js` stubs the extension APIs for Playwright.
-- `safari/` — Safari manifest transform and build script (`npm run build:safari`); see docs/safari.md.
+- `safari/` — Safari manifest transform, build script and PNG icon renderer (`npm run build:safari`, `icons:safari`); see docs/safari.md.
+- `src/platform.js` hides the clipboard auto-clear setting in Safari.
 - `.github/workflows/` — `ci.yml`, `release.yml` (manual; tags and submits to AMO), `backfill-release.yml`.
 
 ## Gotchas

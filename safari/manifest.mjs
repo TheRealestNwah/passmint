@@ -4,10 +4,20 @@
 /** Permissions Safari has no API for. `theme` is Firefox-only. */
 const UNSUPPORTED_PERMISSIONS = new Set(['theme']);
 
+/** PNGs rendered by `npm run icons:safari`; see safari/make-icons.mjs. */
+const APP_ICONS = Object.fromEntries(
+  [48, 96, 128, 256, 512].map((size) => [size, `icons/png/icon-${size}.png`])
+);
+const TOOLBAR_ICONS = Object.fromEntries(
+  [16, 32, 48].map((size) => [size, `icons/png/toolbar-${size}.png`])
+);
+
 export function toSafariManifest(manifest) {
   const { browser_specific_settings: _firefoxOnly, ...rest } = manifest;
   return {
     ...rest,
-    permissions: (manifest.permissions ?? []).filter((p) => !UNSUPPORTED_PERMISSIONS.has(p))
+    permissions: (manifest.permissions ?? []).filter((p) => !UNSUPPORTED_PERMISSIONS.has(p)),
+    icons: APP_ICONS,
+    action: { ...manifest.action, default_icon: TOOLBAR_ICONS }
   };
 }

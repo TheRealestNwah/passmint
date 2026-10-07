@@ -19,8 +19,13 @@ import {
 } from '../src/appearance.js';
 import { mix, normalizeColor, toCss } from '../src/theme.js';
 import { MESSAGES } from '../src/clipboard.js';
+import { supportsClipboardAutoClear } from '../src/platform.js';
 
 const $ = (id) => document.getElementById(id);
+
+const autoClearSupported = supportsClipboardAutoClear(
+  globalThis.browser?.runtime ?? globalThis.chrome?.runtime
+);
 
 // Deliberately still the old product name: renaming this key would orphan the
 // settings of anyone who installed the extension before the rename, silently
@@ -132,7 +137,8 @@ function writeForm() {
   $('word-count-number').value = settings.wordCount;
   $('custom-symbols-row').hidden = settings.symbolSet !== 'custom';
   $('clear-clipboard').checked = settings.clearClipboard;
-  $('clear-clipboard-hint').hidden = !settings.clearClipboard;
+  $('clear-clipboard').closest('.auto-clear').hidden = !autoClearSupported;
+  $('clear-clipboard-hint').hidden = !autoClearSupported || !settings.clearClipboard;
 
   const isPassword = settings.mode === 'password';
   $('panel-password').hidden = appearanceOpen || !isPassword;
@@ -420,6 +426,8 @@ async function init() {
   initAppearance();
 
   settings = await loadSettings();
+  // A setting saved elsewhere (or synced) must not schedule a clear we can't do.
+  if (!autoClearSupported) settings.clearClipboard = false;
   $('wordlist-size').textContent = WORDLIST.length.toLocaleString();
   $('bits-per-word').textContent = Math.log2(WORDLIST.length).toFixed(1);
   writeForm();

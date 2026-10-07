@@ -151,6 +151,30 @@ describe('copy', () => {
   });
 });
 
+describe('clipboard auto-clear', () => {
+  const SAFARI = 'safari-web-extension://test/';
+
+  test('is offered in Firefox and schedules a clear on copy', async () => {
+    await withPopup({ stored: { [SETTINGS_KEY]: { clearClipboard: true } } }, async (page) => {
+      assert.equal(await isHidden(page, '.auto-clear'), false);
+      await page.locator('#copy').click();
+      assert.deepEqual((await recorded(page)).messages, [{ type: 'passmint:schedule-clear' }]);
+    });
+  });
+
+  test('is hidden in Safari, even if a saved setting turned it on', async () => {
+    const cfg = { extensionUrl: SAFARI, stored: { [SETTINGS_KEY]: { clearClipboard: true } } };
+    await withPopup(cfg, async (page) => {
+      assert.equal(await isHidden(page, '.auto-clear'), true);
+      assert.equal(await isHidden(page, '#clear-clipboard-hint'), true);
+      await page.locator('#copy').click();
+      const h = await recorded(page);
+      assert.equal(h.clipboard.length, 1, 'copy itself must still work');
+      assert.deepEqual(h.messages, []);
+    });
+  });
+});
+
 describe('keyboard shortcuts', () => {
   test('Ctrl+Space generates a new result', async () => {
     await withPopup({}, async (page) => {

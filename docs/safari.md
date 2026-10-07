@@ -26,12 +26,17 @@ open build/safari-xcode/Passmint/Passmint.xcodeproj
   (`safari/manifest.mjs`). The popup already treats `browser.theme` as optional
   and falls back to `prefers-color-scheme`.
 - Settings use `storage.local`, as on Firefox.
+- Icons are PNGs (`icons/png/`, rendered from the SVGs by `npm run icons:safari`;
+  commit the result). The toolbar PNG uses a fixed mid-grey, since `context-fill`
+  is Firefox-only.
+- The "Clear clipboard after 30s" setting is hidden in Safari (`src/platform.js`).
+  The clear runs from an alarm with no user gesture behind it, and Safari
+  generally requires one for clipboard writes; iOS has no equivalent. A saved
+  setting from elsewhere is ignored there, and copying itself is unaffected.
 
 ## Open questions (untested, need a Mac)
 
-- Does the clipboard auto-clear alarm fire reliably under Safari's event-page
-  lifecycle, and can the background write the clipboard without focus? It
-  probably cannot on iOS.
-- Toolbar icons are SVG; Safari may need PNG fallbacks. The Xcode app icon
-  definitely needs PNGs.
+- Whether the auto-clear could actually work on macOS Safari. If testing on a
+  Mac shows it does, flip `supportsClipboardAutoClear` in `src/platform.js`.
+- Whether the mid-grey toolbar icon reads well on both light and dark toolbars.
 - App Store distribution needs a paid Apple Developer account.
