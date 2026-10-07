@@ -12,6 +12,7 @@ npm test             # node:test unit tests, no browser (generator, theme, appea
 npm run test:popup   # popup tests in headless Chromium; needs `npx playwright install chromium` once
 npm run lint         # web-ext lint
 npm run build        # unsigned package into web-ext-artifacts/
+npm run build:safari  # Safari-ready folder in build/safari/ (Xcode step needs a Mac)
 npm run check-versions  # manifest.json and package.json versions must match
 ```
 
