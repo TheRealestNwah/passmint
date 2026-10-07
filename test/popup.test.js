@@ -317,6 +317,17 @@ describe('Safari look', () => {
     });
   });
 
+  test('uses the macOS system font stack and its monospace', async () => {
+    await withPopup(SAFARI, async (page) => {
+      const fonts = await page.evaluate(() => ({
+        body: getComputedStyle(document.body).fontFamily,
+        result: getComputedStyle(document.getElementById('result')).fontFamily
+      }));
+      assert.match(fonts.body, /-apple-system/);
+      assert.match(fonts.result, /ui-monospace/);
+    });
+  });
+
   test('Firefox keeps its own look and the style picker', async () => {
     await withPopup({}, async (page) => {
       assert.notEqual((await rootData(page)).style, 'glass');
