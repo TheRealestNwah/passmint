@@ -19,13 +19,13 @@ import {
 } from '../src/appearance.js';
 import { mix, normalizeColor, toCss } from '../src/theme.js';
 import { MESSAGES } from '../src/clipboard.js';
-import { supportsClipboardAutoClear } from '../src/platform.js';
+import { isSafariExtension, supportsClipboardAutoClear } from '../src/platform.js';
 
 const $ = (id) => document.getElementById(id);
 
-const autoClearSupported = supportsClipboardAutoClear(
-  globalThis.browser?.runtime ?? globalThis.chrome?.runtime
-);
+const extensionRuntime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
+const safari = isSafariExtension(extensionRuntime);
+const autoClearSupported = supportsClipboardAutoClear(extensionRuntime);
 
 // Deliberately still the old product name: renaming this key would orphan the
 // settings of anyone who installed the extension before the rename, silently
@@ -259,11 +259,14 @@ function renderAppearanceControls(resolved) {
   }
   // Waterfox's theme colours only mean something in the Nova look.
   $('accent-block').hidden = resolved !== 'nova';
+  // Safari has one look, Liquid Glass, so there is no style to choose.
+  $('style-row').hidden = safari;
+  $('style-hint').hidden = safari;
   $('style-hint').textContent = styleHint(resolved);
 }
 
 function paintAppearance() {
-  const style = resolveStyle(appearance.prefs.style, appearance.browserName);
+  const style = resolveStyle(appearance.prefs.style, appearance.browserName, safari);
   applyAppearance(root, { ...appearance.prefs, style }, appearance.theme);
   try {
     localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(takeSnapshot(root)));

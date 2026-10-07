@@ -9,6 +9,9 @@
  *           browser's light/dark state but not a theme's individual colours,
  *           since Nova is a complete palette in its own right.
  *   auto    nova in Waterfox, photon everywhere else.
+ *   glass   Liquid Glass, for Safari only. It is not a preference: Safari
+ *           always gets it and no other browser ever does, so it has no entry
+ *           in STYLE_PREFS and the style picker is hidden there.
  *
  * Mode
  *   system  follow the browser theme, then prefers-color-scheme.
@@ -76,7 +79,8 @@ export function isWaterfox(browserName) {
 }
 
 /** Turn the user's style preference into the style actually painted. */
-export function resolveStyle(pref, browserName) {
+export function resolveStyle(pref, browserName, safari = false) {
+  if (safari) return 'glass';
   if (pref === 'photon' || pref === 'nova') return pref;
   return isWaterfox(browserName) ? 'nova' : 'photon';
 }
