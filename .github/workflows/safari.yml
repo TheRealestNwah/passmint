@@ -1,0 +1,54 @@
+name: Safari build
+
+# Builds the Safari wrapper app on a macOS runner so Safari breakage shows up
+# without a local Mac. macOS minutes cost more than Linux ones, so this only
+# runs when something the extension ships changes, or by hand. Not a required
+# check.
+
+on:
+  pull_request:
+    paths:
+      - 'safari/**'
+      - 'manifest.json'
+      - 'background.js'
+      - 'popup/**'
+      - 'src/**'
+      - 'icons/**'
+      - '.github/workflows/safari.yml'
+  workflow_dispatch:
+
+jobs:
+  safari:
+    name: Build Safari extension
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - name: Assemble the Safari extension folder
+        run: npm run build:safari
+
+      - name: Convert to an Xcode project
+        run: >
+          xcrun safari-web-extension-converter build/safari
+          --project-location build/safari-xcode
+          --app-name Passmint
+          --bundle-identifier io.github.therealestnwah.passmint
+          --macos-only --no-open --no-prompt --force
+
+      - name: Show schemes
+        run: xcodebuild -list -project build/safari-xcode/Passmint/Passmint.xcodeproj
+
+      - name: Build the macOS app (unsigned)
+        run: >
+          xcodebuild build
+          -project build/safari-xcode/Passmint/Passmint.xcodeproj
+          -scheme Passmint
+          -configuration Debug
+          CODE_SIGNING_ALLOWED=NO
+          CODE_SIGN_IDENTITY=
