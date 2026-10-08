@@ -327,3 +327,10 @@ test("popup.css's Chromium palettes are what chrome/gen-tokens.mjs generates", (
     'popup.css is out of step with CHROMIUM_PALETTES: paste the output of `node chrome/gen-tokens.mjs` over its "Chromium palettes" section'
   );
 });
+
+test('popup.css states color-scheme for forced modes and styles the glass slider itself (#35)', () => {
+  assert.match(CSS, /:root\[data-theme="light"\]\s*\{\s*color-scheme:\s*light;/);
+  assert.match(CSS, /:root\[data-theme="dark"\]\s*\{\s*color-scheme:\s*dark;/);
+  assert.match(CSS, /:root\[data-style="glass"\] input\[type="range"\]::-webkit-slider-runnable-track/);
+  assert.match(CSS, /:root\[data-style="glass"\] \.num::-webkit-inner-spin-button/);
+});

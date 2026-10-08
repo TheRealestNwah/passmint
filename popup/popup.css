@@ -921,6 +921,50 @@ code {
   border-radius: var(--radius-pill);
 }
 
+/* Forced Light/Dark must reach native widgets even where Safari ignores the
+ * inline color-scheme that src/appearance.js sets, so state it in CSS too. */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* Safari draws the native slider track and number spinner from the OS
+ * appearance, which can disagree with a forced mode. Draw the track from our
+ * own tokens and drop the spinner (typing and arrow keys still work). */
+:root[data-style="glass"] input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 22px;
+  background: transparent;
+}
+
+:root[data-style="glass"] input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--border-strong);
+}
+
+:root[data-style="glass"] input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -7px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: var(--glass-drop);
+}
+
+:root[data-style="glass"] .num {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+:root[data-style="glass"] .num::-webkit-inner-spin-button,
+:root[data-style="glass"] .num::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* Without backdrop-filter there is nothing to see through, so go opaque. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   :root[data-style="glass"] {
