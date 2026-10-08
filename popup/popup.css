@@ -939,7 +939,11 @@ code {
 :root[data-style="glass"] input[type="range"]::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: var(--radius-pill);
-  background: var(--border-strong);
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--fill, 0%),
+    var(--border-strong) var(--fill, 0%)
+  );
 }
 
 :root[data-style="glass"] input[type="range"]::-webkit-slider-thumb {

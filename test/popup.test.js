@@ -68,6 +68,17 @@ describe('generating', () => {
     });
   });
 
+  test('the slider fill follows its value', async () => {
+    await withPopup({}, async (page) => {
+      const fill = () => page.locator('#length').evaluate((el) => el.style.getPropertyValue('--fill'));
+      assert.equal(parseFloat(await fill()).toFixed(1), (((20 - 4) / (128 - 4)) * 100).toFixed(1));
+      await page.locator('#length-number').fill('128');
+      assert.equal(await fill(), '100%');
+      await page.locator('#length-number').fill('4');
+      assert.equal(await fill(), '0%');
+    });
+  });
+
   test('a preset rewrites the form and the result', async () => {
     await withPopup({}, async (page) => {
       await page.locator('.chip[data-preset="pin"]').click();

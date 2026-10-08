@@ -242,7 +242,7 @@ The package lands in `web-ext-artifacts/`.
 ```bash
 npm install
 npm test            # 104 unit tests, node:test, no browser needed
-npm run test:popup  # 46 popup tests in headless Chromium (Playwright)
+npm run test:popup  # 47 popup tests in headless Chromium (Playwright)
 npm run lint        # web-ext lint against the Mozilla add-on rules
 npm start           # launch a scratch Firefox profile with the add-on loaded
 npm run build:safari # Safari-ready folder in build/safari/ (the Xcode step needs a Mac)
