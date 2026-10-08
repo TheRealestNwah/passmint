@@ -137,6 +137,11 @@ function writeForm() {
   }
   $('length-number').value = settings.length;
   $('word-count-number').value = settings.wordCount;
+  for (const slider of document.querySelectorAll('input[type="range"]')) {
+    // The glass style draws its own track, which needs the fill spelled out.
+    const { min, max, value } = slider;
+    slider.style.setProperty('--fill', `${((value - min) / (max - min)) * 100}%`);
+  }
   $('custom-symbols-row').hidden = settings.symbolSet !== 'custom';
   $('clear-clipboard').checked = settings.clearClipboard;
   $('clear-clipboard').closest('.auto-clear').hidden = !autoClearSupported;
