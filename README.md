@@ -34,6 +34,10 @@ current Firefox theme. None of the four carry an install-time warning, and
 | :---: | :---: | :---: |
 | ![Passmint in Waterfox, light](docs/screenshots/waterfox-light.png) | ![Passmint in Waterfox, dark](docs/screenshots/waterfox-dark.png) | ![The Appearance panel](docs/screenshots/appearance.png) |
 
+| Safari, light | Safari, dark | Safari, passphrase mode |
+| :---: | :---: | :---: |
+| ![Passmint password generator in Safari, light](docs/screenshots/safari-light.png) | ![Passmint password generator in Safari, dark](docs/screenshots/safari-dark.png) | ![Passmint passphrase generator in Safari, dark](docs/screenshots/safari-passphrase.png) |
+
 ## Features
 
 **Two modes**
