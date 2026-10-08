@@ -28,8 +28,9 @@ open build/safari-xcode/Passmint/Passmint.xcodeproj
   and falls back to `prefers-color-scheme`.
 - Settings use `storage.local`, as on Firefox.
 - Safari has exactly one look, Liquid Glass (`data-style="glass"` in
-  `popup/popup.css`): translucent blurred surfaces over a soft gradient, specular
-  edges, pill shapes, the system font. `resolveStyle` forces it in Safari and never
+  `popup/popup.css`): neutral translucent surfaces, subtle highlights, pill shapes, and the system
+  font, matching Safari’s restrained controls. The CSS blur works within the popup;
+  it does not reproduce Safari’s native glass material over the browser behind it. `resolveStyle` forces it in Safari and never
   returns it elsewhere, and the style and theme-colour pickers are hidden there.
   Light/dark/system mode still works. The design follows macOS 26's Liquid Glass;
   I don't have specifics for macOS 27, so revisit when it ships. It honours
