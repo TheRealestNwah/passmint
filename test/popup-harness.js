@@ -16,6 +16,7 @@
  *   extensionUrl what runtime.getURL('') returns (default 'moz-extension://test/')
  *   theme       what theme.getCurrent resolves to (default: no theme)
  *   clipboard   'ok' (default) or 'rejects', to force the textarea fallback
+ *   deviceScaleFactor pixel ratio (default 1; the screenshot script uses 2)
  */
 
 import { createServer } from 'node:http';
@@ -123,7 +124,7 @@ export async function createHarness() {
 
     /** Open the popup and wait until it has painted and generated (or failed to). */
     async openPopup(cfg = {}) {
-      const context = await browser.newContext({ userAgent: cfg.userAgent });
+      const context = await browser.newContext({ userAgent: cfg.userAgent, deviceScaleFactor: cfg.deviceScaleFactor });
       const page = await context.newPage();
       const errors = [];
       page.on('pageerror', (err) => errors.push(err));

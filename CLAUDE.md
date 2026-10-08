@@ -43,5 +43,6 @@ above on every PR.
 - Permissions are `storage`, `clipboardWrite`, `alarms`, `theme`; keep README's
   permission list in step with `manifest.json`.
 - README test counts (`npm test`, `test:popup`) go stale; update on change.
+- Chrome screenshots: `node scripts/chrome-screenshots.mjs` regenerates the Chromium screenshots in `docs/screenshots/`.
 - README screenshots live in `docs/screenshots/` (360px popup, real popup
   rendered in headless Firefox/Waterfox with `browser.storage` stubbed).

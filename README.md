@@ -38,6 +38,18 @@ current Firefox theme. None of the four carry an install-time warning, and
 | :---: | :---: | :---: |
 | ![Passmint password generator in Safari, light](docs/screenshots/safari-light.png) | ![Passmint password generator in Safari, dark](docs/screenshots/safari-dark.png) | ![Passmint passphrase generator in Safari, dark](docs/screenshots/safari-passphrase.png) |
 
+| Chrome, light | Chrome, dark | Chrome, passphrase mode |
+| :---: | :---: | :---: |
+| ![Passmint in Chrome, light](docs/screenshots/chrome-light.png) | ![Passmint in Chrome, dark](docs/screenshots/chrome-dark.png) | ![Passmint passphrase generator in Chrome, dark](docs/screenshots/chrome-passphrase.png) |
+
+| Edge, light | Edge, dark | Brave, light |
+| :---: | :---: | :---: |
+| ![Passmint in Edge, light](docs/screenshots/edge-light.png) | ![Passmint in Edge, dark](docs/screenshots/edge-dark.png) | ![Passmint in Brave, light](docs/screenshots/brave-light.png) |
+
+| Brave, dark | Opera GX, light | Opera GX, dark |
+| :---: | :---: | :---: |
+| ![Passmint in Brave, dark](docs/screenshots/brave-dark.png) | ![Passmint in Opera GX, light](docs/screenshots/opera-gx-light.png) | ![Passmint in Opera GX, dark](docs/screenshots/opera-gx-dark.png) |
+
 ## Features
 
 **Two modes**
