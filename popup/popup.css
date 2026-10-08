@@ -737,15 +737,16 @@ code {
 /* ── Liquid Glass (Safari only) ──────────────────────────────────────
  * src/appearance.js sets data-style="glass" whenever the popup runs in Safari,
  * and never anywhere else. Same three colour states as the blocks above.
- * Surfaces are translucent and blurred over a soft gradient, edged with a
- * specular highlight, with continuous rounded shapes and the system font.
+ * Surfaces use neutral Safari-like materials, subtle highlights, rounded
+ * shapes and the system font. CSS blur applies within the popup; it cannot
+ * reproduce Safari’s native glass material over the browser behind it.
  * The glass rules sit under :root[data-style="glass"] so they win over Photon.
  */
 :root[data-style="glass"] {
-  --bg: #eef1f8;
+  --bg: #f2f2f2;
   --bg-sunken: rgba(255, 255, 255, 0.35);
   --bg-raised: rgba(255, 255, 255, 0.5);
-  --border: rgba(255, 255, 255, 0.65);
+  --border: rgba(0, 0, 0, 0.1);
   --border-strong: rgba(60, 60, 67, 0.45);
   --text: #1d1d1f;
   --text-muted: #55555c;
@@ -770,29 +771,25 @@ code {
   --s4: #0071e3;
 
   --radius: 12px;
-  --radius-lg: 22px;
+  --radius-lg: 16px;
   --radius-pill: 999px;
   --radius-pill-inner: 999px;
   --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
 
-  --glass-wallpaper:
-    radial-gradient(at 12% 0%, #c9e0ff 0, transparent 55%),
-    radial-gradient(at 100% 28%, #ecd6ff 0, transparent 50%),
-    radial-gradient(at 0% 100%, #d0f3e6 0, transparent 55%),
-    #eef1f8;
-  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(255, 255, 255, 0.2);
-  --glass-drop: 0 6px 20px rgba(30, 40, 80, 0.1);
+  --glass-wallpaper: var(--bg);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --glass-drop: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 @media (prefers-color-scheme: dark) {
   :root[data-style="glass"]:not([data-theme="light"]) {
-    --bg: #14151c;
+    --bg: #242424;
     --bg-sunken: rgba(255, 255, 255, 0.05);
     --bg-raised: rgba(255, 255, 255, 0.1);
     --border: rgba(255, 255, 255, 0.16);
     --border-strong: rgba(235, 235, 245, 0.45);
     --text: #f5f5f7;
-    --text-muted: #b4b4bf;
+    --text-muted: #bdbdbd;
 
     --button-bg: rgba(255, 255, 255, 0.1);
     --surface-hover: rgba(255, 255, 255, 0.18);
@@ -813,24 +810,20 @@ code {
     --s3: #5fdc85;
     --s4: #64a8ff;
 
-    --glass-wallpaper:
-      radial-gradient(at 12% 0%, #26407a 0, transparent 55%),
-      radial-gradient(at 100% 28%, #4a2a73 0, transparent 50%),
-      radial-gradient(at 0% 100%, #1b5a52 0, transparent 55%),
-      #14151c;
-    --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.04);
-    --glass-drop: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --glass-wallpaper: var(--bg);
+    --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --glass-drop: 0 1px 3px rgba(0, 0, 0, 0.12);
   }
 }
 
 :root[data-style="glass"][data-theme="dark"] {
-  --bg: #14151c;
+  --bg: #242424;
   --bg-sunken: rgba(255, 255, 255, 0.05);
   --bg-raised: rgba(255, 255, 255, 0.1);
   --border: rgba(255, 255, 255, 0.16);
   --border-strong: rgba(235, 235, 245, 0.45);
   --text: #f5f5f7;
-  --text-muted: #b4b4bf;
+  --text-muted: #bdbdbd;
 
   --button-bg: rgba(255, 255, 255, 0.1);
   --surface-hover: rgba(255, 255, 255, 0.18);
@@ -851,13 +844,9 @@ code {
   --s3: #5fdc85;
   --s4: #64a8ff;
 
-  --glass-wallpaper:
-    radial-gradient(at 12% 0%, #26407a 0, transparent 55%),
-    radial-gradient(at 100% 28%, #4a2a73 0, transparent 50%),
-    radial-gradient(at 0% 100%, #1b5a52 0, transparent 55%),
-    #14151c;
-  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(255, 255, 255, 0.04);
-  --glass-drop: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --glass-wallpaper: var(--bg);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --glass-drop: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 :root[data-style="glass"] body {
@@ -880,8 +869,8 @@ code {
   background: var(--bg-raised);
   border: 1px solid var(--border);
   box-shadow: var(--glass-shine), var(--glass-drop);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(100%);
+  backdrop-filter: blur(24px) saturate(100%);
 }
 
 :root[data-style="glass"] .panel {
@@ -912,9 +901,19 @@ code {
 }
 
 :root[data-style="glass"] .btn-primary {
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: var(--surface-active);
+  color: var(--text);
+  border: 1px solid var(--border);
   border-radius: var(--radius-pill);
-  box-shadow: var(--glass-shine), 0 4px 14px color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: var(--glass-shine), var(--glass-drop);
+}
+
+:root[data-style="glass"] .btn-primary:hover {
+  background: var(--surface-hover);
+}
+
+:root[data-style="glass"] .btn-primary:active {
+  background: var(--button-bg);
 }
 
 :root[data-style="glass"] .btn,
