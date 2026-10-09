@@ -11,7 +11,7 @@ mkdirSync(out, { recursive: true });
 
 // App/extension icon. The Xcode app icon uses the largest.
 const APP_SIZES = [48, 96, 128, 256, 512];
-// Toolbar icon. Safari's toolbar slot is 19pt, so these are the 1x/2x/3x sizes
+// Toolbar icon (icons/toolbar-safari.svg, an outline lock). Safari's toolbar slot is 19pt, so these are the 1x/2x/3x sizes
 // (anything else gets resampled and looks soft). Rendered black on transparent
 // so Safari treats it as a template image and tints it like its own icons.
 const TOOLBAR_SIZES = [19, 38, 57];
@@ -33,7 +33,7 @@ async function render(svgFile, size, outFile, color) {
 }
 
 for (const size of APP_SIZES) await render('icon.svg', size, `icon-${size}.png`);
-for (const size of TOOLBAR_SIZES) await render('toolbar.svg', size, `toolbar-${size}.png`, TOOLBAR_COLOR);
+for (const size of TOOLBAR_SIZES) await render('toolbar-safari.svg', size, `toolbar-${size}.png`, TOOLBAR_COLOR);
 
 await browser.close();
 console.log(`Icons written to ${out}`);

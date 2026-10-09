@@ -36,7 +36,7 @@ open build/safari-xcode/Passmint/Passmint.xcodeproj
   I don't have specifics for macOS 27, so revisit when it ships. It honours
   Reduce Transparency, and falls back to opaque where `backdrop-filter` is missing.
 - Icons are PNGs (`icons/png/`, rendered from the SVGs by `npm run icons:safari`;
-  commit the result). The toolbar PNGs are 19/38/57px (Safari's native 1x/2x/3x),
+  commit the result). The toolbar PNGs are rendered from `icons/toolbar-safari.svg` (an outline lock) at 19/38/57px (Safari's native 1x/2x/3x),
   black on transparent so Safari tints them as template images; `context-fill` is Firefox-only.
 - The "Clear clipboard after 30s" setting is hidden in Safari (`src/platform.js`).
   The clear runs from an alarm with no user gesture behind it, and Safari
