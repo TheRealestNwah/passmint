@@ -9,7 +9,7 @@ export const APP_ICONS = Object.fromEntries(
   [48, 96, 128, 256, 512].map((size) => [size, `icons/png/icon-${size}.png`])
 );
 export const TOOLBAR_ICONS = Object.fromEntries(
-  [16, 32, 48].map((size) => [size, `icons/png/toolbar-${size}.png`])
+  [19, 38, 57].map((size) => [size, `icons/png/toolbar-${size}.png`])
 );
 
 export function toSafariManifest(manifest) {
