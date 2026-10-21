@@ -46,3 +46,17 @@ above on every PR.
 - Chrome screenshots: `node scripts/chrome-screenshots.mjs` regenerates the Chromium screenshots in `docs/screenshots/`.
 - README screenshots live in `docs/screenshots/` (360px popup, real popup
   rendered in headless Firefox/Waterfox with `browser.storage` stubbed).
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in this repo's GitHub Issues, managed with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five-role vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
